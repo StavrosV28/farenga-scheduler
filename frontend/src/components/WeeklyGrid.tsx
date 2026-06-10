@@ -1,17 +1,20 @@
+import { useState } from "react"
 import type { Booking, Chapel } from "../types"
+import BookingModal from "./BookingModal"
 
 interface WeeklyGridProps {
   chapels: Chapel[]
   bookings: Booking[]
   weekDates: string[]
+  onBookingCreated: () => void
 }
 
-function WeeklyGrid({ chapels, bookings, weekDates }: WeeklyGridProps) {
+function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGridProps) {
+  const [selectedCell, setSelectedCell] = useState<{ chapel: Chapel; date: string } | null>(null)
+
   return (
     <div style={{ overflowX: "auto" }}>
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
-
-        {/* Header row - days of the week */}
         <thead>
           <tr>
             <th style={cellStyle}>Chapel</th>
@@ -26,8 +29,6 @@ function WeeklyGrid({ chapels, bookings, weekDates }: WeeklyGridProps) {
             ))}
           </tr>
         </thead>
-
-        {/* One row per chapel */}
         <tbody>
           {chapels.map(chapel => (
             <tr key={chapel.chapel_id}>
@@ -39,7 +40,11 @@ function WeeklyGrid({ chapels, bookings, weekDates }: WeeklyGridProps) {
                   b => b.chapel_id === chapel.chapel_id && b.date === date
                 )
                 return (
-                  <td key={date} style={cellStyle}>
+                  <td
+                    key={date}
+                    style={{ ...cellStyle, cursor: "pointer" }}
+                    onClick={() => setSelectedCell({ chapel, date })}
+                  >
                     {cellBookings.length === 0 ? (
                       <span style={{ color: "#aaa" }}>Available</span>
                     ) : (
@@ -63,8 +68,19 @@ function WeeklyGrid({ chapels, bookings, weekDates }: WeeklyGridProps) {
             </tr>
           ))}
         </tbody>
-
       </table>
+
+      {selectedCell && (
+        <BookingModal
+          chapel={selectedCell.chapel}
+          date={selectedCell.date}
+          onClose={() => setSelectedCell(null)}
+          onBookingsCreated={() => {
+            onBookingCreated()
+            setSelectedCell(null)
+          }}
+        />
+      )}
     </div>
   )
 }

@@ -48,6 +48,12 @@ function App() {
     setCurrentDate(d)
   }
 
+  function refreshBookings() {
+  const refDate = weekDates[0]
+  api.get(`/bookings/week?reference_date=${refDate}`)
+    .then(res => setBookings(res.data))
+  }
+
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
       <h1>Farenga Scheduler</h1>
@@ -64,6 +70,7 @@ function App() {
           chapels={chapels}
           bookings={bookings}
           weekDates={weekDates}
+          onBookingCreated={refreshBookings}
         />
       )}
     </div>
