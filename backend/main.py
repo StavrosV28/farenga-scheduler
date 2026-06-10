@@ -166,7 +166,15 @@ def delete_booking(booking_id: str, deleted_by: str):
         .execute()
     
     return {"message": "Booking deleted successfully"}
-            
+
+
+@app.get("/chapels")
+def get_chapels():
+    response = supabase.table("chapels") \
+        .select("*") \
+        .execute()
+    
+    return response.data
 
 @app.get("/bookings/week")
 def get_bookings_for_week(reference_date: date):
