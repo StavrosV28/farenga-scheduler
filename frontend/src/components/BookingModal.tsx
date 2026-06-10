@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import type { Chapel } from "../types"
 import api from "../api"
 
@@ -149,3 +149,57 @@ const overlayStyle: React.CSSProperties = {
     zIndex: 1000
 }
 
+const modalStyle: React.CSSProperties = {
+    background: "white",
+    borderRadius: "12px",
+    padding: "24px",
+    width: "90%",
+    maxWidth: "420px",
+    maxHeight: "90vh",
+    overflowY: "auto"
+}
+
+const fieldStyle: React.CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+    marginBottom: "16px"
+}
+
+const inputStyle: React.CSSProperties = {
+    padding: "8px",
+    borderRadius: "6px",
+    border: "1px solid #ddd",
+    fontSize: "16px"
+}
+
+const errorStyle: React.CSSProperties = {
+    background: "#fee",
+    border: "1px solid #fcc",
+    borderRadius: "6px",
+    padding: "10px",
+    marginBottom: "16px",
+    color: "#c00"
+}
+
+const submitStyle: React.CSSProperties = {
+    background: "#1a73e8",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    padding: "10px 20px",
+    fontSize: "16px",
+    cursor: "pointer",
+    flex: 1
+}
+
+const cancelStyle: React.CSSProperties = {
+    background: "#f1f1f1",
+    border: "none",
+    borderRadius: "6px",
+    padding: "10px 20px",
+    fontSize: "16px",
+    cursor: "pointer"
+}
+
+export default BookingModal
