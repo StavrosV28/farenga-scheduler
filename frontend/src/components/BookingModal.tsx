@@ -35,7 +35,7 @@ function BookingModal({ chapel, date, onClose, onBookingsCreated }: BookingModal
         try {
             await api.post("/bookings", {
                 chapel_id: chapel.chapel_id,
-                created_by: "00000000-0000-0000-0000-000000000000",
+                created_by: "8a501639-3035-498c-a698-66805ead7290",
                 family_name: familyName,
                 date: date,
                 start_time: startTime,
