@@ -1,6 +1,7 @@
 import { useState } from "react"
 import type { Booking, Chapel } from "../types"
 import BookingModal from "./BookingModal"
+import BookingDetail from "./BookingDetail"
 
 interface WeeklyGridProps {
   chapels: Chapel[]
@@ -11,6 +12,7 @@ interface WeeklyGridProps {
 
 function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGridProps) {
   const [selectedCell, setSelectedCell] = useState<{ chapel: Chapel; date: string } | null>(null)
+  const [selectedBooking, setSelectedBooking] = useState<{ booking: Booking; chapel: Chapel } | null>(null)
 
   return (
     <div style={{ overflowX: "auto" }}>
@@ -49,7 +51,14 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
                       <span style={{ color: "#aaa" }}>Available</span>
                     ) : (
                       cellBookings.map(booking => (
-                        <div key={booking.booking_id} style={bookingStyle}>
+                        <div
+                          key={booking.booking_id}
+                          style={bookingStyle}
+                          onClick={e => {
+                            e.stopPropagation()
+                            setSelectedBooking({ booking, chapel })
+                          }}
+                        >
                           <div style={{ fontWeight: "bold" }}>
                             {booking.family_name}
                           </div>
@@ -75,9 +84,21 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
           chapel={selectedCell.chapel}
           date={selectedCell.date}
           onClose={() => setSelectedCell(null)}
-          onBookingsCreated={() => {
+          onBookingCreated={() => {
             onBookingCreated()
             setSelectedCell(null)
+          }}
+        />
+      )}
+
+      {selectedBooking && (
+        <BookingDetail
+          booking={selectedBooking.booking}
+          chapel={selectedBooking.chapel}
+          onClose={() => setSelectedBooking(null)}
+          onBookingChanged={() => {
+            onBookingCreated()
+            setSelectedBooking(null)
           }}
         />
       )}
@@ -96,7 +117,8 @@ const bookingStyle: React.CSSProperties = {
   background: "#e8f0fe",
   borderRadius: "6px",
   padding: "6px",
-  marginBottom: "4px"
+  marginBottom: "4px",
+  cursor: "pointer"
 }
 
 export default WeeklyGrid

@@ -6,10 +6,10 @@ interface BookingModalProps {
     chapel: Chapel
     date: string
     onClose: () => void
-    onBookingsCreated: () => void
+    onBookingCreated: () => void
 }
 
-function BookingModal({ chapel, date, onClose, onBookingsCreated }: BookingModalProps) {
+function BookingModal({ chapel, date, onClose, onBookingCreated: onBookingsCreated }: BookingModalProps) {
     const [familyName, setFamilyName] = useState("")
     const [startTime, setStartTime] = useState("")
     const [endTime, setEndTime] = useState("")

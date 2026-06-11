@@ -1,0 +1,159 @@
+import type { Booking, Chapel } from "../types"
+import api from "../api"
+import { useState } from "react"
+
+interface BookingDetailProps {
+    booking: Booking
+    chapel: Chapel
+    onClose: () => void
+    onBookingChanged: () => void
+}
+
+function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDetailProps) {
+    const [ confirming, setConfirming] = useState(false)
+    const [ loading, setLoading] = useState(false)
+    const [ error, setError] = useState("")
+
+    async function handleDelete() {
+        setLoading(true)
+        try {
+            await api.delete('/bookings/${booking.booking_id}?deleted_by=${booking.created_by}')
+            onBookingChanged()
+            onClose()
+        } catch {
+            setError("Something went wrong, please try again.")
+        } finally {
+            setLoading(false)
+        }
+    }
+      return (
+    <div style={overlayStyle}>
+      <div style={modalStyle}>
+        <h2 style={{ marginTop: 0 }}>{booking.family_name} Family</h2>
+
+        <div style={detailRowStyle}>
+          <span style={labelStyle}>Chapel</span>
+          <span>{chapel.chapel_name}</span>
+        </div>
+
+        <div style={detailRowStyle}>
+          <span style={labelStyle}>Date</span>
+          <span>{new Date(booking.date + "T00:00:00").toLocaleDateString("en-US", {
+            weekday: "long", month: "long", day: "numeric"
+          })}</span>
+        </div>
+
+        <div style={detailRowStyle}>
+          <span style={labelStyle}>Time</span>
+          <span>{booking.start_time.slice(0, 5)} — {booking.end_time.slice(0, 5)}</span>
+        </div>
+
+        <div style={detailRowStyle}>
+          <span style={labelStyle}>Service</span>
+          <span>{booking.service_type}</span>
+        </div>
+
+        <div style={detailRowStyle}>
+          <span style={labelStyle}>Notes</span>
+          <span style={{ color: booking.notes ? "inherit" : "#aaa" }}>
+            {booking.notes || "No notes added"}
+          </span>
+        </div>
+
+        {error && (
+          <div style={errorStyle}>{error}</div>
+        )}
+
+        {!confirming ? (
+          <div style={{ display: "flex", gap: "10px", marginTop: "24px" }}>
+            <button style={deleteStyle} onClick={() => setConfirming(true)}>
+              Delete booking
+            </button>
+            <button style={cancelStyle} onClick={onClose}>
+              Close
+            </button>
+          </div>
+        ) : (
+          <div style={{ marginTop: "24px" }}>
+            <p style={{ color: "#c00", fontWeight: "500" }}>
+              Are you sure you want to delete this booking?
+            </p>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                style={deleteStyle}
+                onClick={handleDelete}
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Yes, delete"}
+              </button>
+              <button style={cancelStyle} onClick={() => setConfirming(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+const overlayStyle: React.CSSProperties = {
+  position: "fixed",
+  top: 0, left: 0, right: 0, bottom: 0,
+  background: "rgba(0,0,0,0.5)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1000
+}
+
+const modalStyle: React.CSSProperties = {
+  background: "white",
+  borderRadius: "12px",
+  padding: "24px",
+  width: "90%",
+  maxWidth: "420px"
+}
+
+const detailRowStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "10px 0",
+  borderBottom: "1px solid #f0f0f0"
+}
+
+const labelStyle: React.CSSProperties = {
+  color: "#666",
+  fontWeight: "500"
+}
+
+const errorStyle: React.CSSProperties = {
+  background: "#fee",
+  border: "1px solid #fcc",
+  borderRadius: "6px",
+  padding: "10px",
+  marginTop: "16px",
+  color: "#c00"
+}
+
+const deleteStyle: React.CSSProperties = {
+  background: "#dc3545",
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
+  padding: "10px 20px",
+  fontSize: "16px",
+  cursor: "pointer",
+  flex: 1
+}
+
+const cancelStyle: React.CSSProperties = {
+  background: "#f1f1f1",
+  border: "none",
+  borderRadius: "6px",
+  padding: "10px 20px",
+  fontSize: "16px",
+  cursor: "pointer"
+}
+
+export default BookingDetail
