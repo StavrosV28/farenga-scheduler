@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import type { Chapel } from "../types"
 import api from "../api"
+import { supabase } from "../supabase"
 
 interface BookingModalProps {
     chapel: Chapel
@@ -17,6 +18,7 @@ function BookingModal({ chapel, date, onClose, onBookingCreated: onBookingsCreat
     const [notes, setNotes] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
+    
 
     async function handleSubmit() {
         if (!familyName || !startTime || !endTime) {
@@ -31,11 +33,13 @@ function BookingModal({ chapel, date, onClose, onBookingCreated: onBookingsCreat
 
         setLoading(true)
         setError("")
-
+        
+        const { data: { session } } = await supabase.auth.getSession()
+        const userId = session?.user?.id
         try {
             await api.post("/bookings", {
                 chapel_id: chapel.chapel_id,
-                created_by: "8a501639-3035-498c-a698-66805ead7290",
+                created_by: userId,
                 family_name: familyName,
                 date: date,
                 start_time: startTime,
