@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
-import type { Booking, Chapel } from "./types"
+import type { Booking } from "./types"
+import type { Chapel } from "./types"
 import WeeklyGrid from "./components/WeeklyGrid"
+import Login from "./components/Login"
 import api from "./api"
+import { supabase } from "./supabase"
 
 function getWeekDates(referenceDate: Date): string[] {
   const day = referenceDate.getDay()
@@ -16,25 +19,46 @@ function getWeekDates(referenceDate: Date): string[] {
 
 function App() {
   const [bookings, setBookings] = useState<Booking[]>([])
-  const [chapels, setChapels] = useState<Chapel[]>([])
+  const [chapels, setChapels] = useState<Array<Chapel>>([])
   const [currentDate, setCurrentDate] = useState(new Date())
   const [loading, setLoading] = useState(true)
+  const [session, setSession] = useState<any>(null)
+  const [checkingSession, setCheckingSession] = useState(true)
 
   const weekDates = getWeekDates(currentDate)
 
   useEffect(() => {
-    api.get("/chapels").then(res => setChapels(res.data))
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setCheckingSession(false)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   useEffect(() => {
+    if (!session) return
+    api.get("/chapels").then(res => setChapels(res.data))
+  }, [session])
+
+  useEffect(() => {
+    if (!session) return
     setLoading(true)
-    const refDate = weekDates[0]
-    api.get(`/bookings/week?reference_date=${refDate}`)
+    api.get(`/bookings/week?reference_date=${weekDates[0]}`)
       .then(res => {
         setBookings(res.data)
         setLoading(false)
       })
-  }, [currentDate])
+  }, [currentDate, session])
+
+  function refreshBookings() {
+    api.get(`/bookings/week?reference_date=${weekDates[0]}`)
+      .then(res => setBookings(res.data))
+  }
 
   function goToPreviousWeek() {
     const d = new Date(currentDate)
@@ -48,15 +72,21 @@ function App() {
     setCurrentDate(d)
   }
 
-  function refreshBookings() {
-  const refDate = weekDates[0]
-  api.get(`/bookings/week?reference_date=${refDate}`)
-    .then(res => setBookings(res.data))
+  async function handleSignOut() {
+    await supabase.auth.signOut()
   }
+
+  if (checkingSession) return <p style={{ padding: "20px" }}>Loading...</p>
+  if (!session) return <Login onLogin={() => {}} />
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1>Farenga Scheduler</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+        <h1 style={{ margin: 0 }}>Farenga Scheduler</h1>
+        <button onClick={handleSignOut} style={{ padding: "8px 16px", cursor: "pointer" }}>
+          Sign out
+        </button>
+      </div>
 
       <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
         <button onClick={goToPreviousWeek}>← Previous week</button>
