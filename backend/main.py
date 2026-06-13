@@ -176,6 +176,16 @@ def get_chapels():
     
     return response.data
 
+@app.get("/bookings/day")
+def get_bookings_for_day(date: date):
+    response = supabase.table("bookings") \
+        .select("*") \
+        .eq("date", str(date)) \
+        .order("start_time") \
+        .execute()
+    
+    return response.data
+
 @app.get("/bookings/week")
 def get_bookings_for_week(reference_date: date):
     start_of_week = reference_date - timedelta(days=reference_date.weekday())
