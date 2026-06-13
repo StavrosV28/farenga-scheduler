@@ -5,6 +5,7 @@ import WeeklyGrid from "./components/WeeklyGrid"
 import Login from "./components/Login"
 import api from "./api"
 import { supabase } from "./supabase"
+import DailyView from "./components/DailyView"
 
 function getWeekDates(referenceDate: Date): string[] {
   const day = referenceDate.getDay()
@@ -24,6 +25,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [session, setSession] = useState<any>(null)
   const [checkingSession, setCheckingSession] = useState(true)
+  const [view, setView] = useState<'daily' | 'weekly'>('daily')
 
   const weekDates = getWeekDates(currentDate)
 
@@ -80,31 +82,67 @@ function App() {
   if (!session) return <Login onLogin={() => {}} />
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-        <h1 style={{ margin: 0 }}>Farenga Scheduler</h1>
-        <button onClick={handleSignOut} style={{ padding: "8px 16px", cursor: "pointer" }}>
-          Sign out
-        </button>
-      </div>
-
-      <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
-        <button onClick={goToPreviousWeek}>← Previous week</button>
-        <button onClick={goToNextWeek}>Next week →</button>
-      </div>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <WeeklyGrid
-          chapels={chapels}
-          bookings={bookings}
-          weekDates={weekDates}
-          onBookingCreated={refreshBookings}
-        />
-      )}
+  <div style={{ padding: "20px", fontFamily: "sans-serif", maxWidth: "900px", margin: "0 auto" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+      <h1 style={{ margin: 0 }}>Farenga Scheduler</h1>
+      <button onClick={handleSignOut} style={{ padding: "8px 16px", cursor: "pointer" }}>
+        Sign out
+      </button>
     </div>
-  )
+
+    <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+      <button
+        onClick={() => setView('daily')}
+        style={tabStyle(view === 'daily')}
+      >
+        Today
+      </button>
+      <button
+        onClick={() => setView('weekly')}
+        style={tabStyle(view === 'weekly')}
+      >
+        Weekly
+      </button>
+    </div>
+
+    {view === 'daily' ? (
+      <DailyView
+        chapels={chapels}
+        onBookingChanged={refreshBookings}
+      />
+    ) : (
+      <>
+        <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
+          <button onClick={goToPreviousWeek}>← Previous week</button>
+          <button onClick={goToNextWeek}>Next week →</button>
+        </div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <WeeklyGrid
+            chapels={chapels}
+            bookings={bookings}
+            weekDates={weekDates}
+            onBookingCreated={refreshBookings}
+          />
+        )}
+      </>
+    )}
+  </div>
+)
+}
+
+function tabStyle(active: boolean): React.CSSProperties {
+  return {
+    padding: "8px 20px",
+    borderRadius: "99px",
+    border: "none",
+    cursor: "pointer",
+    fontWeight: "500",
+    fontSize: "14px",
+    background: active ? "#1a73e8" : "#f1f1f1",
+    color: active ? "white" : "#555"
+  }
 }
 
 export default App
