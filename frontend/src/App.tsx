@@ -82,21 +82,27 @@ function App() {
   if (!session) return <Login onLogin={() => {}} />
 
   return (
+  <div style={{ 
+    padding: "20px", 
+    fontFamily: "inherit",
+    maxWidth: "1000px", 
+    margin: "0 auto",
+    minHeight: "100vh"
+  }}>
     <div style={{ 
-      padding: "20px", 
-      fontFamily: "inherit",
-      maxWidth: "1000px", 
-      margin: "0 auto",
-      minHeight: "100vh"
+      display: "flex", 
+      justifyContent: "space-between", 
+      alignItems: "center", 
+      marginBottom: "24px",
+      paddingBottom: "16px",
+      borderBottom: "0.5px solid var(--border)"
     }}>
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center", 
-        marginBottom: "24px",
-        paddingBottom: "16px",
-        borderBottom: "0.5px solid var(--border)"
-      }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <img 
+          src="/farenga.png" 
+          alt="Farenga Funeral Home" 
+          style={{ height: "40px", width: "auto" }} 
+        />
         <div>
           <h1 style={{ margin: 0, fontSize: "20px", fontWeight: "500", color: "var(--text-primary)" }}>
             Farenga Scheduler
@@ -105,60 +111,61 @@ function App() {
             {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </p>
         </div>
-        <button 
-          onClick={handleSignOut} 
-          style={{ 
-            padding: "8px 16px", 
-            background: "transparent",
-            border: "0.5px solid var(--border)",
-            borderRadius: "8px",
-            color: "var(--text-secondary)",
-            fontSize: "13px"
-          }}
-        >
-          Sign out
-        </button>
       </div>
-
-      <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
-        <button
-          onClick={() => setView('daily')}
-          style={tabStyle(view === 'daily')}
-        >
-          Today
-        </button>
-        <button
-          onClick={() => setView('weekly')}
-          style={tabStyle(view === 'weekly')}
-        >
-          Weekly
-        </button>
-      </div>
-
-      {view === 'daily' ? (
-        <DailyView
-          chapels={chapels}
-          onBookingChanged={refreshBookings}
-        />
-      ) : (
-        <>
-          <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-            <button onClick={goToPreviousWeek} style={navButtonStyle}>← Previous</button>
-            <button onClick={goToNextWeek} style={navButtonStyle}>Next →</button>
-          </div>
-          {loading ? (
-            <p style={{ color: "var(--text-secondary)" }}>Loading...</p>
-          ) : (
-            <WeeklyGrid
-              chapels={chapels}
-              bookings={bookings}
-              weekDates={weekDates}
-              onBookingCreated={refreshBookings}
-            />
-          )}
-        </>
-      )}
+      <button 
+        onClick={handleSignOut} 
+        style={{ 
+          padding: "8px 16px", 
+          background: "transparent",
+          border: "0.5px solid var(--border)",
+          borderRadius: "8px",
+          color: "var(--text-secondary)",
+          fontSize: "13px"
+        }}
+      >
+        Sign out
+      </button>
     </div>
+
+    <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+      <button
+        onClick={() => setView('daily')}
+        style={tabStyle(view === 'daily')}
+      >
+        Today
+      </button>
+      <button
+        onClick={() => setView('weekly')}
+        style={tabStyle(view === 'weekly')}
+      >
+        Weekly
+      </button>
+    </div>
+
+    {view === 'daily' ? (
+      <DailyView
+        chapels={chapels}
+        onBookingChanged={refreshBookings}
+      />
+    ) : (
+      <>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+          <button onClick={goToPreviousWeek} style={navButtonStyle}>← Previous</button>
+          <button onClick={goToNextWeek} style={navButtonStyle}>Next →</button>
+        </div>
+        {loading ? (
+          <p style={{ color: "var(--text-secondary)" }}>Loading...</p>
+        ) : (
+          <WeeklyGrid
+            chapels={chapels}
+            bookings={bookings}
+            weekDates={weekDates}
+            onBookingCreated={refreshBookings}
+          />
+        )}
+      </>
+    )}
+  </div>
   )
 }
 

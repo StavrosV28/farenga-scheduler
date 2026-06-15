@@ -31,21 +31,28 @@ function Login ({ onLogin }: LoginProps) {
         onLogin()
     }
     return (
-  <div style={{ 
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "var(--bg-primary)"
-  }}>
-    <div style={{ 
-      background: "var(--bg-secondary)",
-      borderRadius: "16px",
-      padding: "32px",
-      width: "90%",
-      maxWidth: "380px",
-      border: "0.5px solid var(--border)"
-    }}>
+      <div style={{ 
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--bg-primary)"
+      }}>
+      <img
+        src="/ffh_logo_header.png" 
+        alt="Farenga Funeral Home" 
+        style={{ height: "80px", width: "auto", marginBottom: "24px", mixBlendMode: "lighten" }} 
+      />
+
+      <div style={{ 
+        background: "var(--bg-secondary)",
+        borderRadius: "16px",
+        padding: "32px",
+        width: "90%",
+        maxWidth: "380px",
+        border: "0.5px solid var(--border)"
+      }}>
       <h1 style={{ margin: "0 0 4px", fontSize: "22px", fontWeight: "500", color: "var(--text-primary)" }}>
         Farenga Scheduler
       </h1>
@@ -111,7 +118,7 @@ function Login ({ onLogin }: LoginProps) {
       </button>
     </div>
   </div>
-)
+  )
 }
 
 export default Login
