@@ -55,7 +55,7 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
-        <h2 style={{ marginTop: 0 }}>{booking.family_name} Family</h2>
+        <h2 style={{ marginTop: 0, color: "var(--text-primary)", fontWeight: "500" }}>{booking.family_name} Family</h2>
 
         <div style={detailRowStyle}>
           <span style={labelStyle}>Chapel</span>
@@ -81,7 +81,7 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
 
         <div style={detailRowStyle}>
           <span style={labelStyle}>Notes</span>
-          <span style={{ color: booking.notes ? "inherit" : "#aaa" }}>
+          <span style={{ color: booking.notes ? "var(--text-primary)" : "var(--text-muted)" }}>
             {booking.notes || "No notes added"}
           </span>
         </div>
@@ -129,7 +129,7 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   top: 0, left: 0, right: 0, bottom: 0,
-  background: "rgba(0,0,0,0.5)",
+  background: "rgba(0,0,0,0.7)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -137,63 +137,67 @@ const overlayStyle: React.CSSProperties = {
 }
 
 const modalStyle: React.CSSProperties = {
-  background: "white",
-  borderRadius: "12px",
+  background: "var(--bg-secondary)",
+  borderRadius: "16px",
   padding: "24px",
   width: "90%",
-  maxWidth: "420px"
+  maxWidth: "420px",
+  border: "0.5px solid var(--border)"
 }
 
 const detailRowStyle: React.CSSProperties = {
   display: "flex",
   justifyContent: "space-between",
   padding: "10px 0",
-  borderBottom: "1px solid #f0f0f0"
+  borderBottom: "0.5px solid var(--border)",
+  fontSize: "14px"
 }
 
 const labelStyle: React.CSSProperties = {
-  color: "#666",
+  color: "var(--text-secondary)",
   fontWeight: "500"
 }
 
 const errorStyle: React.CSSProperties = {
-  background: "#fee",
-  border: "1px solid #fcc",
-  borderRadius: "6px",
+  background: "var(--accent-red-dim)",
+  border: "0.5px solid var(--accent-red)",
+  borderRadius: "8px",
   padding: "10px",
   marginTop: "16px",
-  color: "#c00"
+  color: "var(--accent-red)"
 }
 
 const editStyle: React.CSSProperties = {
-  background: "#1a73e8",
+  background: "var(--accent-blue)",
   color: "white",
   border: "none",
-  borderRadius: "6px",
+  borderRadius: "8px",
   padding: "10px 20px",
-  fontSize: "16px",
+  fontSize: "15px",
   cursor: "pointer",
-  flex: 1
+  flex: 1,
+  fontWeight: "500"
 }
 
 const deleteStyle: React.CSSProperties = {
-  background: "#dc3545",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
+  background: "var(--accent-red-dim)",
+  color: "var(--accent-red)",
+  border: "0.5px solid var(--accent-red)",
+  borderRadius: "8px",
   padding: "10px 20px",
-  fontSize: "16px",
+  fontSize: "15px",
   cursor: "pointer",
   flex: 1
 }
 
 const cancelStyle: React.CSSProperties = {
-  background: "#f1f1f1",
-  border: "none",
-  borderRadius: "6px",
+  background: "transparent",
+  border: "0.5px solid var(--border)",
+  borderRadius: "8px",
   padding: "10px 20px",
-  fontSize: "16px",
-  cursor: "pointer"
+  fontSize: "15px",
+  cursor: "pointer",
+  color: "var(--text-secondary)"
 }
 
 export default BookingDetail

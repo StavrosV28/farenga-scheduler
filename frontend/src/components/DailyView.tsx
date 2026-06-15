@@ -40,7 +40,7 @@ function DailyView({ chapels, onBookingChanged }: DailyViewProps) {
 
   return (
     <div>
-      <h2 style={{ marginBottom: "20px" }}>
+      <h2 style={{ marginBottom: "20px", fontSize: "18px", fontWeight: "500", color: "var(--text-primary)" }}>
         {new Date(today + "T00:00:00").toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
@@ -57,7 +57,7 @@ function DailyView({ chapels, onBookingChanged }: DailyViewProps) {
             <h3 style={chapelHeaderStyle}>{chapel.chapel_name}</h3>
 
             {chapelBookings.length === 0 ? (
-              <p style={{ color: "#aaa", margin: "10px 0" }}>No services today</p>
+              <p style={{ color: "var(--text-muted)", margin: "10px 0", fontSize: "14px" }}>No services today</p>
             ) : (
               chapelBookings.map(booking => (
                 <div
@@ -106,11 +106,11 @@ function DailyView({ chapels, onBookingChanged }: DailyViewProps) {
 
 function serviceTypeBadgeStyle(serviceType: string): React.CSSProperties {
   const colors: Record<string, { background: string; color: string }> = {
-    Viewing: { background: "#e8f0fe", color: "#1a73e8" },
-    Funeral: { background: "#fce8e6", color: "#d93025" },
-    Memorial: { background: "#e6f4ea", color: "#1e8e3e" }
+    Viewing: { background: "var(--accent-blue-dim)", color: "var(--accent-blue)" },
+    Funeral: { background: "var(--accent-red-dim)", color: "var(--accent-red)" },
+    Memorial: { background: "var(--accent-green-dim)", color: "var(--accent-green)" }
   }
-  const { background, color } = colors[serviceType] || { background: "#f1f1f1", color: "#555" }
+  const { background, color } = colors[serviceType] || { background: "var(--bg-card)", color: "var(--text-secondary)" }
   return {
     background,
     color,
@@ -122,29 +122,30 @@ function serviceTypeBadgeStyle(serviceType: string): React.CSSProperties {
 }
 
 const chapelSectionStyle: React.CSSProperties = {
-  marginBottom: "24px",
-  background: "white",
+  marginBottom: "16px",
+  background: "var(--bg-secondary)",
   borderRadius: "12px",
   padding: "16px",
-  border: "1px solid #e0e0e0"
+  border: "0.5px solid var(--border)"
 }
 
 const chapelHeaderStyle: React.CSSProperties = {
   margin: "0 0 12px 0",
-  fontSize: "16px",
-  fontWeight: "600",
-  color: "#333",
-  borderBottom: "1px solid #f0f0f0",
+  fontSize: "15px",
+  fontWeight: "500",
+  color: "var(--text-primary)",
+  borderBottom: "0.5px solid var(--border)",
   paddingBottom: "10px"
 }
 
 const bookingCardStyle: React.CSSProperties = {
   padding: "12px",
   borderRadius: "8px",
-  background: "#f8f9fa",
+  background: "var(--bg-card)",
   marginBottom: "8px",
   cursor: "pointer",
-  border: "1px solid #e8e8e8"
+  border: "0.5px solid var(--border)",
+  borderLeft: "3px solid var(--accent-blue)"
 }
 
 export default DailyView

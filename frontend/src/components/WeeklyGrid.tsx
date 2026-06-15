@@ -14,6 +14,14 @@ import type { DragEndEvent } from "@dnd-kit/core"
 import { useDraggable, useDroppable } from "@dnd-kit/core"
 import api from "../api"
 
+function formatTime(time: string): string {
+  const [hours, minutes] = time.split(":")
+  const h = parseInt(hours)
+  const ampm = h >= 12 ? "PM" : "AM"
+  const hour = h % 12 || 12
+  return `${hour}:${minutes} ${ampm}`
+}
+
 interface WeeklyGridProps {
   chapels: Chapel[]
   bookings: Booking[]
@@ -32,24 +40,19 @@ function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
     data: { booking }
   })
 
-  function formatTime(time: string): string {
-  const [hours, minutes] = time.split(":")
-  const h = parseInt(hours)
-  const ampm = h >= 12 ? "PM" : "AM"
-  const hour = h % 12 || 12
-  return `${hour}:${minutes} ${ampm}`
-}
-
   const style: React.CSSProperties = {
-    background: "#e8f0fe",
-    borderRadius: "6px",
-    padding: "6px",
-    marginBottom: "4px",
-    cursor: "grab",
-    opacity: isDragging ? 0.4 : 1,
-    transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
-    userSelect: "none"
-  }
+  background: "#1e3f6e",
+  borderRadius: "8px",
+  padding: "8px 10px",
+  marginBottom: "6px",
+  cursor: "grab",
+  opacity: isDragging ? 0.4 : 1,
+  transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
+  userSelect: "none",
+  border: "0.5px solid #2d5a9e",
+  borderLeftWidth: "3px",
+  borderLeftColor: "#60a5fa"
+}
 
   return (
     <div
@@ -59,11 +62,11 @@ function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
       {...attributes}
       onClick={onClick}
     >
-      <div style={{ fontWeight: "bold" }}>{booking.family_name}</div>
-      <div style={{ fontSize: "12px" }}>
+      <div style={{ fontWeight: "500", fontSize: "13px", color: "#ffffff" }}>{booking.family_name}</div>
+      <div style={{ fontSize: "11px", color: "#93c5fd", marginTop: "2px" }}>
         {formatTime(booking.start_time)} - {formatTime(booking.end_time)}
       </div>
-      <div style={{ fontSize: "11px", color: "#666" }}>{booking.service_type}</div>
+      <div style={{ fontSize: "11px", color: "#60a5fa", marginTop: "1px" }}>{booking.service_type}</div>
     </div>
   )
 }
@@ -87,7 +90,7 @@ function DroppableCell({ chapel, date, children, onClick }: DroppableCellProps) 
       style={{
         ...cellStyle,
         cursor: "pointer",
-        background: isOver ? "#f0f7ff" : undefined
+        background: isOver ? "#1a3a5c" : undefined
       }}
       onClick={onClick}
     >
@@ -177,20 +180,37 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
 
       <div style={{ overflowX: "auto" }}>
         <table style={{ borderCollapse: "collapse", width: "100%" }}>
-          <thead>
-            <tr>
-              <th style={cellStyle}>Chapel</th>
-              {weekDates.map(date => (
-                <th key={date} style={cellStyle}>
-                  {new Date(date + "T00:00:00").toLocaleDateString("en-US", {
-                    weekday: "short",
-                    month: "short",
-                    day: "numeric"
-                  })}
-                </th>
-              ))}
+      <thead>
+  <tr style={{ background: "var(--bg-secondary)" }}>
+    <th style={{ 
+      ...cellStyle, 
+      color: "var(--text-secondary)", 
+      fontSize: "12px",
+      fontWeight: "500"
+    }}>
+      Chapel
+    </th>
+    {weekDates.map(date => {
+      const isToday = date === new Date().toISOString().split("T")[0]
+      return (
+        <th key={date} style={{ 
+          ...cellStyle,
+          color: isToday ? "var(--accent-blue)" : "var(--text-secondary)",
+          fontSize: "12px",
+          fontWeight: "500",
+          borderBottom: isToday ? "2px solid var(--accent-blue)" : undefined
+        }}>
+          {new Date(date + "T00:00:00").toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric"
+          })}
+          {isToday && <span style={{ fontSize: "10px", marginLeft: "4px" }}>✦</span>}
+        </th>
+      )
+    })}
             </tr>
-          </thead>
+        </thead>
           <tbody>
             {chapels.map(chapel => (
               <tr key={chapel.chapel_id}>
@@ -209,7 +229,13 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
                       onClick={() => setSelectedCell({ chapel, date })}
                     >
                       {cellBookings.length === 0 ? (
-                        <span style={{ color: "#aaa" }}>Available</span>
+                        <span style={{ 
+                          color: "var(--text-muted)",
+                          fontSize: "18px",
+                          display: "block",
+                          textAlign: "center",
+                          padding: "8px 0" 
+                        }}>+</span>
                       ) : (
                         cellBookings.map(booking => (
                           <DraggableBooking
@@ -234,19 +260,21 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
       <DragOverlay>
         {activeBooking && (
           <div style={{
-            background: "#e8f0fe",
-            borderRadius: "6px",
-            padding: "6px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            background: "var(--accent-blue-dim)",
+            borderRadius: "8px",
+            padding: "8px 10px",
+            borderLeft: "3px solid var(--accent-blue)",
             minWidth: "120px"
           }}>
-            <div style={{ fontWeight: "bold" }}>{activeBooking.family_name}</div>
-            <div style={{ fontSize: "12px" }}>
-              {activeBooking.start_time.slice(0, 5)} - {activeBooking.end_time.slice(0, 5)}
-            </div>
+          <div style={{ fontWeight: "500", fontSize: "13px", color: "var(--text-primary)" }}>
+            {activeBooking.family_name}
           </div>
+          <div style={{ fontSize: "11px", color: "var(--accent-blue)", marginTop: "2px" }}>
+            {formatTime(activeBooking.start_time)} - {formatTime(activeBooking.end_time)}
+          </div>
+            </div>
         )}
-      </DragOverlay>
+        </DragOverlay>
 
       {selectedCell && (
         <BookingModal
@@ -276,19 +304,20 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
 }
 
 const cellStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
+  border: "0.5px solid var(--border)",
   padding: "10px",
   verticalAlign: "top",
-  minWidth: "130px"
+  minWidth: "130px",
+  background: "var(--bg-secondary)"
 }
 
 const errorStyle: React.CSSProperties = {
-  background: "#fee",
-  border: "1px solid #fcc",
-  borderRadius: "6px",
+  background: "var(--accent-red-dim)",
+  border: "0.5px solid var(--accent-red)",
+  borderRadius: "8px",
   padding: "10px 16px",
   marginBottom: "16px",
-  color: "#c00",
+  color: "var(--accent-red)",
   display: "flex",
   alignItems: "center"
 }
