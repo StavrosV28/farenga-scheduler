@@ -9,11 +9,11 @@ import DailyView from "./components/DailyView"
 
 function getWeekDates(referenceDate: Date): string[] {
   const day = referenceDate.getDay()
-  const monday = new Date(referenceDate)
-  monday.setDate(referenceDate.getDate() - (day === 0 ? 6 : day - 1))
+  const sunday = new Date(referenceDate)
+  sunday.setDate(referenceDate.getDate() - day)
   return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(monday)
-    d.setDate(monday.getDate() + i)
+    const d = new Date(sunday)
+    d.setDate(sunday.getDate() + i)
     return d.toISOString().split("T")[0]
   })
 }
