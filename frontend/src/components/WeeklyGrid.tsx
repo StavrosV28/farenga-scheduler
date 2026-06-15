@@ -39,6 +39,7 @@ function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
     cursor: "grab",
     opacity: isDragging ? 0.4 : 1,
     transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
+    userSelect: "none"
   }
 
   return (
