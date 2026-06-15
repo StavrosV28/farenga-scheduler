@@ -6,6 +6,7 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors
 } from "@dnd-kit/core"
@@ -104,6 +105,12 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 }
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay:250,
+        tolerance: 5
+      }
     })
   )
 
