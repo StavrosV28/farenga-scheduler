@@ -190,9 +190,13 @@ def get_bookings_for_day(date: date):
 def get_bookings_for_week(reference_date: date):
     start_of_week = reference_date - timedelta(days=reference_date.weekday())
     end_of_week = start_of_week + timedelta(days=6)
-
+    
+    print(f"reference_date: {reference_date}")
+    print(f"start_of_week: {start_of_week}")
+    print(f"end_of_week: {end_of_week}")
+    
     response = supabase.table("bookings") \
-        .select("*, chapels(chapel_name)") \
+        .select("*") \
         .gte("date", str(start_of_week)) \
         .lte("date", str(end_of_week)) \
         .execute()
