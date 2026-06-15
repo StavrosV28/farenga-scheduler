@@ -188,7 +188,7 @@ def get_bookings_for_day(date: date):
 
 @app.get("/bookings/week")
 def get_bookings_for_week(reference_date: date):
-    start_of_week = reference_date - timedelta(days=reference_date.weekday())
+    start_of_week = reference_date - timedelta(days=(reference_date.weekday() + 1) % 7)
     end_of_week = start_of_week + timedelta(days=6)
     
     print(f"reference_date: {reference_date}")
