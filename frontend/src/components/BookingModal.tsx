@@ -1,68 +1,85 @@
-import React, { useState } from "react"
-import type { Chapel } from "../types"
+import { useState } from "react"
+import type { Chapel, Booking } from "../types"
 import api from "../api"
 import { supabase } from "../supabase"
 
 interface BookingModalProps {
-    chapel: Chapel
-    date: string
-    onClose: () => void
-    onBookingCreated: () => void
+  chapel: Chapel
+  date: string
+  onClose: () => void
+  onBookingCreated: () => void
+  existingBooking?: Booking
 }
 
-function BookingModal({ chapel, date, onClose, onBookingCreated: onBookingsCreated }: BookingModalProps) {
-    const [familyName, setFamilyName] = useState("")
-    const [startTime, setStartTime] = useState("")
-    const [endTime, setEndTime] = useState("")
-    const [serviceType, setServiceType] = useState("Viewing")
-    const [notes, setNotes] = useState("")
-    const [error, setError] = useState("")
-    const [loading, setLoading] = useState(false)
-    
+function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking }: BookingModalProps) {
+  const [familyName, setFamilyName] = useState(existingBooking?.family_name ?? "")
+  const [startTime, setStartTime] = useState(existingBooking?.start_time.slice(0, 5) ?? "")
+  const [endTime, setEndTime] = useState(existingBooking?.end_time.slice(0, 5) ?? "")
+  const [serviceType, setServiceType] = useState(existingBooking?.service_type ?? "Viewing")
+  const [notes, setNotes] = useState(existingBooking?.notes ?? "")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-    async function handleSubmit() {
-        if (!familyName || !startTime || !endTime) {
-            setError("Please fill in all required fields")
-            return
-        }
-        
-        if (startTime >= endTime) {
-            setError("End time must be after start time")
-            return
-        }
+  const isEditing = !!existingBooking
 
-        setLoading(true)
-        setError("")
-        
-        const { data: { session } } = await supabase.auth.getSession()
-        const userId = session?.user?.id
-        try {
-            await api.post("/bookings", {
-                chapel_id: chapel.chapel_id,
-                created_by: userId,
-                family_name: familyName,
-                date: date,
-                start_time: startTime,
-                end_time: endTime,
-                service_type: serviceType,
-                notes: notes || null
-            })
-            onBookingsCreated()
-            onClose()
-        } catch (err: any) {
-            if (err.response?.status === 409) {
-                setError("This chapel is already in use at this time.")
-            } else {
-                setError("Something went wrong, please try again.")
-            }
-        } finally {
-            setLoading(false)
-        }
+  async function handleSubmit() {
+    if (!familyName || !startTime || !endTime) {
+      setError("Please fill in all required fields")
+      return
     }
+
+    if (startTime >= endTime) {
+      setError("End time must be after start time")
+      return
+    }
+
+    setLoading(true)
+    setError("")
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const userId = session?.user?.id
+
+      if (isEditing) {
+        await api.put(`/bookings/${existingBooking.booking_id}?updated_by=${userId}`, {
+          chapel_id: chapel.chapel_id,
+          family_name: familyName,
+          date: date,
+          start_time: startTime,
+          end_time: endTime,
+          service_type: serviceType,
+          notes: notes || null
+        })
+      } else {
+        await api.post("/bookings", {
+          chapel_id: chapel.chapel_id,
+          created_by: userId,
+          family_name: familyName,
+          date: date,
+          start_time: startTime,
+          end_time: endTime,
+          service_type: serviceType,
+          notes: notes || null
+        })
+      }
+
+      onBookingCreated()
+      onClose()
+    } catch (err: any) {
+      if (err.response?.status === 409) {
+        setError("This chapel is already booked during that time")
+      } else {
+        setError("Something went wrong, please try again")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
-        <h2 style={{ marginTop: 0 }}>New Booking</h2>
+        <h2 style={{ marginTop: 0 }}>{isEditing ? "Edit Booking" : "New Booking"}</h2>
         <p style={{ color: "#666", marginTop: "-10px" }}>
           {chapel.chapel_name} — {new Date(date + "T00:00:00").toLocaleDateString("en-US", {
             weekday: "long", month: "long", day: "numeric"
@@ -132,7 +149,7 @@ function BookingModal({ chapel, date, onClose, onBookingCreated: onBookingsCreat
             disabled={loading}
             style={submitStyle}
           >
-            {loading ? "Saving..." : "Save booking"}
+            {loading ? "Saving..." : isEditing ? "Save changes" : "Save booking"}
           </button>
           <button onClick={onClose} style={cancelStyle}>
             Cancel
@@ -144,66 +161,66 @@ function BookingModal({ chapel, date, onClose, onBookingCreated: onBookingsCreat
 }
 
 const overlayStyle: React.CSSProperties = {
-    position: "fixed",
-    top: 0, left: 0, right: 0, bottom: 0,
-    background: "rgba(0,0,0,0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000
+  position: "fixed",
+  top: 0, left: 0, right: 0, bottom: 0,
+  background: "rgba(0,0,0,0.5)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1000
 }
 
 const modalStyle: React.CSSProperties = {
-    background: "white",
-    borderRadius: "12px",
-    padding: "24px",
-    width: "90%",
-    maxWidth: "420px",
-    maxHeight: "90vh",
-    overflowY: "auto"
+  background: "white",
+  borderRadius: "12px",
+  padding: "24px",
+  width: "90%",
+  maxWidth: "420px",
+  maxHeight: "90vh",
+  overflowY: "auto"
 }
 
 const fieldStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-    marginBottom: "16px"
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
+  marginBottom: "16px"
 }
 
 const inputStyle: React.CSSProperties = {
-    padding: "8px",
-    borderRadius: "6px",
-    border: "1px solid #ddd",
-    fontSize: "16px"
+  padding: "8px",
+  borderRadius: "6px",
+  border: "1px solid #ddd",
+  fontSize: "16px"
 }
 
 const errorStyle: React.CSSProperties = {
-    background: "#fee",
-    border: "1px solid #fcc",
-    borderRadius: "6px",
-    padding: "10px",
-    marginBottom: "16px",
-    color: "#c00"
+  background: "#fee",
+  border: "1px solid #fcc",
+  borderRadius: "6px",
+  padding: "10px",
+  marginBottom: "16px",
+  color: "#c00"
 }
 
 const submitStyle: React.CSSProperties = {
-    background: "#1a73e8",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    padding: "10px 20px",
-    fontSize: "16px",
-    cursor: "pointer",
-    flex: 1
+  background: "#1a73e8",
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
+  padding: "10px 20px",
+  fontSize: "16px",
+  cursor: "pointer",
+  flex: 1
 }
 
 const cancelStyle: React.CSSProperties = {
-    background: "#f1f1f1",
-    border: "none",
-    borderRadius: "6px",
-    padding: "10px 20px",
-    fontSize: "16px",
-    cursor: "pointer"
+  background: "#f1f1f1",
+  border: "none",
+  borderRadius: "6px",
+  padding: "10px 20px",
+  fontSize: "16px",
+  cursor: "pointer"
 }
 
 export default BookingModal

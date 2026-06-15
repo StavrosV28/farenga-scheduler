@@ -1,32 +1,50 @@
 import type { Booking, Chapel } from "../types"
 import api from "../api"
 import { useState } from "react"
+import BookingModal from "./BookingModal"
 
 interface BookingDetailProps {
-    booking: Booking
-    chapel: Chapel
-    onClose: () => void
-    onBookingChanged: () => void
+  booking: Booking
+  chapel: Chapel
+  onClose: () => void
+  onBookingChanged: () => void
 }
 
 function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDetailProps) {
-    const [ confirming, setConfirming] = useState(false)
-    const [ loading, setLoading] = useState(false)
-    const [ error, setError] = useState("")
+  const [confirming, setConfirming] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [editing, setEditing] = useState(false)
 
-    async function handleDelete() {
-        setLoading(true)
-        try {
-            await api.delete('/bookings/${booking.booking_id}?deleted_by=${booking.created_by}')
-            onBookingChanged()
-            onClose()
-        } catch {
-            setError("Something went wrong, please try again.")
-        } finally {
-            setLoading(false)
-        }
+  async function handleDelete() {
+    setLoading(true)
+    try {
+      await api.delete(`/bookings/${booking.booking_id}?deleted_by=${booking.created_by}`)
+      onBookingChanged()
+      onClose()
+    } catch {
+      setError("Something went wrong, please try again")
+    } finally {
+      setLoading(false)
     }
-      return (
+  }
+
+  if (editing) {
+    return (
+      <BookingModal
+        chapel={chapel}
+        date={booking.date}
+        onClose={() => setEditing(false)}
+        onBookingCreated={() => {
+          onBookingChanged()
+          onClose()
+        }}
+        existingBooking={booking}
+      />
+    )
+  }
+
+  return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
         <h2 style={{ marginTop: 0 }}>{booking.family_name} Family</h2>
@@ -66,8 +84,11 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
 
         {!confirming ? (
           <div style={{ display: "flex", gap: "10px", marginTop: "24px" }}>
+            <button style={editStyle} onClick={() => setEditing(true)}>
+              Edit
+            </button>
             <button style={deleteStyle} onClick={() => setConfirming(true)}>
-              Delete booking
+              Delete
             </button>
             <button style={cancelStyle} onClick={onClose}>
               Close
@@ -134,6 +155,17 @@ const errorStyle: React.CSSProperties = {
   padding: "10px",
   marginTop: "16px",
   color: "#c00"
+}
+
+const editStyle: React.CSSProperties = {
+  background: "#1a73e8",
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
+  padding: "10px 20px",
+  fontSize: "16px",
+  cursor: "pointer",
+  flex: 1
 }
 
 const deleteStyle: React.CSSProperties = {
