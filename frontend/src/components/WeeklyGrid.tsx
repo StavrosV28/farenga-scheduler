@@ -4,12 +4,12 @@ import BookingModal from "./BookingModal"
 import BookingDetail from "./BookingDetail"
 import {
   DndContext,
-  DragEndEvent,
   DragOverlay,
   PointerSensor,
   useSensor,
   useSensors
 } from "@dnd-kit/core"
+import type { DragEndEvent } from "@dnd-kit/core"
 import { useDraggable, useDroppable } from "@dnd-kit/core"
 import api from "../api"
 
