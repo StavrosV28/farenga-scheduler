@@ -108,8 +108,8 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay:250,
-        tolerance: 5
+        delay: 300,
+        tolerance: 8
       }
     })
   )
@@ -150,8 +150,18 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
   return (
     <DndContext
       sensors={sensors}
-      onDragStart={event => setActiveBooking(event.active.data.current?.booking)}
-      onDragEnd={handleDragEnd}
+      onDragStart={event => {
+        setActiveBooking(event.active.data.current?.booking)
+        document.body.style.overflow = "hidden"
+      }}
+      onDragEnd={event =>  {
+        document.body.style.overflow = ""
+        handleDragEnd(event)
+      }}
+      onDragCancel={() => {
+        document.body.style.overflow = ""
+        setActiveBooking(null)
+      }}
     >
       {dragError && (
         <div style={errorStyle}>
