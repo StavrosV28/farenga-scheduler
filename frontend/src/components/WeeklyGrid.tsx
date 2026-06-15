@@ -31,6 +31,14 @@ function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
     data: { booking }
   })
 
+  function formatTime(time: string): string {
+  const [hours, minutes] = time.split(":")
+  const h = parseInt(hours)
+  const ampm = h >= 12 ? "PM" : "AM"
+  const hour = h % 12 || 12
+  return `${hour}:${minutes} ${ampm}`
+}
+
   const style: React.CSSProperties = {
     background: "#e8f0fe",
     borderRadius: "6px",
@@ -52,7 +60,7 @@ function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
     >
       <div style={{ fontWeight: "bold" }}>{booking.family_name}</div>
       <div style={{ fontSize: "12px" }}>
-        {booking.start_time.slice(0, 5)} - {booking.end_time.slice(0, 5)}
+        {formatTime(booking.start_time)} - {formatTime(booking.end_time)}
       </div>
       <div style={{ fontSize: "11px", color: "#666" }}>{booking.service_type}</div>
     </div>

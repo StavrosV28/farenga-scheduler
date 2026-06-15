@@ -8,6 +8,14 @@ interface DailyViewProps {
   onBookingChanged: () => void
 }
 
+function formatTime(time: string): string {
+  const [hours, minutes] = time.split(":")
+  const h = parseInt(hours)
+  const ampm = h >= 12 ? "PM" : "AM"
+  const hour = h % 12 || 12
+  return `${hour}:${minutes} ${ampm}`
+}
+
 function DailyView({ chapels, onBookingChanged }: DailyViewProps) {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
@@ -66,7 +74,7 @@ function DailyView({ chapels, onBookingChanged }: DailyViewProps) {
                     </span>
                   </div>
                   <div style={{ color: "#555", marginTop: "6px", fontSize: "14px" }}>
-                    {booking.start_time.slice(0, 5)} — {booking.end_time.slice(0, 5)}
+                    {formatTime(booking.start_time)} — {formatTime(booking.end_time)}
                   </div>
                   {booking.notes && (
                     <div style={{ color: "#777", marginTop: "6px", fontSize: "13px" }}>

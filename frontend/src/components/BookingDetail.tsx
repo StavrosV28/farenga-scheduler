@@ -10,6 +10,14 @@ interface BookingDetailProps {
   onBookingChanged: () => void
 }
 
+function formatTime(time: string): string {
+  const [hours, minutes] = time.split(":")
+  const h = parseInt(hours)
+  const ampm = h >= 12 ? "PM" : "AM"
+  const hour = h % 12 || 12
+  return `${hour}:${minutes} ${ampm}`
+}
+
 function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDetailProps) {
   const [confirming, setConfirming] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -63,7 +71,7 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
 
         <div style={detailRowStyle}>
           <span style={labelStyle}>Time</span>
-          <span>{booking.start_time.slice(0, 5)} — {booking.end_time.slice(0, 5)}</span>
+          <span>{formatTime(booking.start_time)} — {formatTime(booking.end_time)}</span>
         </div>
 
         <div style={detailRowStyle}>
