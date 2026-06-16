@@ -32,6 +32,8 @@ class BookingCreate(BaseModel):
     end_time: str
     service_type: str
     funeral_location: str | None = None
+    funeral_date: str | None = None
+    funeral_time: str | None = None
     internment: str | None = None
     notes: str | None = None
     created_by: str
@@ -44,6 +46,8 @@ class BookingUpdate(BaseModel):
     end_time: str
     service_type: str
     funeral_location: str | None = None
+    funeral_date: str | None = None
+    funeral_time: str | None = None
     internment: str | None = None
     notes: str | None = None
 
@@ -99,6 +103,8 @@ def create_bookings(booking: BookingCreate):
         "end_time": booking.end_time,
         "service_type": booking.service_type,
         "funeral_location": booking.funeral_location,
+        "funeral_date": booking.funeral_date,
+        "funeral_time": booking.funeral_time,
         "internment": booking.internment,
         "notes": booking.notes
     }).execute()
@@ -153,6 +159,8 @@ def update_booking(booking_id: str, booking: BookingUpdate, updated_by: str):
         "end_time": booking.end_time,
         "service_type": booking.service_type,
         "funeral_location": booking.funeral_location,
+        "funeral_date": booking.funeral_date,
+        "funeral_time": booking.funeral_time,
         "internment": booking.internment,
         "notes": booking.notes,
     }).eq("booking_id", booking_id).execute()
