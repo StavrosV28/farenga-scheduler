@@ -17,6 +17,8 @@ export interface Booking {
     end_time: string
     service_type: string
     funeral_location: string
+    funeral_date: string | null
+    funeral_time: string | null
     internment: string
     notes: string | null
     created_at: string

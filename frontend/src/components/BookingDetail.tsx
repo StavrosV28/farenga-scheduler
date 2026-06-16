@@ -94,6 +94,24 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
         </div>
 
         <div style={detailRowStyle}>
+          <span style={labelStyle}>Funeral date</span>
+          <span style={{ color: booking.funeral_date ? "var(--text-primary)" : "var(--text-muted)" }}>
+          {booking.funeral_date 
+            ? new Date(booking.funeral_date + "T00:00:00").toLocaleDateString("en-US", {
+            weekday: "long", month: "long", day: "numeric"
+          })
+          : "Not specified"}
+          </span>
+        </div>
+
+        <div style={detailRowStyle}>
+          <span style={labelStyle}>Funeral time</span>
+          <span style={{ color: booking.funeral_time ? "var(--text-primary)" : "var(--text-muted)" }}>
+          {booking.funeral_time ? formatTime(booking.funeral_time) : "Not specified"}
+          </span>
+        </div>
+
+        <div style={detailRowStyle}>
           <span style={labelStyle}>Notes</span>
           <span style={{ color: booking.notes ? "var(--text-primary)" : "var(--text-muted)" }}>
             {booking.notes || "No notes added"}

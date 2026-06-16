@@ -21,6 +21,8 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
   const [loading, setLoading] = useState(false)
   const [funeralLocation, setFuneralLocation] = useState(existingBooking?.funeral_location ?? "")
   const [internment, setInternment] = useState(existingBooking?.internment ?? "")
+  const [funeralDate, setFuneralDate] = useState(existingBooking?.funeral_date ?? "")
+  const [funeralTime, setFuneralTime] = useState(existingBooking?.funeral_time?.slice(0, 5) ?? "")
 
   const isEditing = !!existingBooking
 
@@ -51,6 +53,8 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
           end_time: endTime,
           service_type: serviceType,
           funeral_location: funeralLocation || null,
+          funeral_date: funeralDate || null,
+          funeral_time: funeralTime || null,
           internment: internment || null,
           notes: notes || null
         })
@@ -64,6 +68,8 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
           end_time: endTime,
           service_type: serviceType,
           funeral_location: funeralLocation || null,
+          funeral_date: funeralDate || null,
+          funeral_time: funeralTime || null,
           internment: internment || null,
           notes: notes || null
         })
@@ -159,6 +165,26 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
               onChange={e => setInternment(e.target.value)}
               style={inputStyle}
               placeholder="e.g. Calvary Cemetery, Neptune Crematory"
+            />
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Funeral date</label>
+            <input
+              type="date"
+              value={funeralDate}
+              onChange={e => setFuneralDate(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Funeral time</label>
+            <input
+              type="time"
+              value={funeralTime}
+              onChange={e => setFuneralTime(e.target.value)}
+              style={inputStyle}
             />
           </div>
 
