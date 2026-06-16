@@ -80,6 +80,20 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
         </div>
 
         <div style={detailRowStyle}>
+          <span style={labelStyle}>Funeral location</span>
+          <span style={{ color: booking.funeral_location ? "var(--text-primary)" : "var(--text-muted)" }}>
+          {booking.funeral_location || "Not specified"}
+          </span>
+        </div>
+
+        <div style={detailRowStyle}>
+          <span style={labelStyle}>Internment</span>
+          <span style={{ color: booking.internment ? "var(--text-primary)" : "var(--text-muted)" }}>
+          {booking.internment || "Not specified"}
+          </span>
+        </div>
+
+        <div style={detailRowStyle}>
           <span style={labelStyle}>Notes</span>
           <span style={{ color: booking.notes ? "var(--text-primary)" : "var(--text-muted)" }}>
             {booking.notes || "No notes added"}

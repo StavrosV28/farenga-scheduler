@@ -19,6 +19,8 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
   const [notes, setNotes] = useState(existingBooking?.notes ?? "")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [funeralLocation, setFuneralLocation] = useState(existingBooking?.funeral_location ?? "")
+  const [internment, setInternment] = useState(existingBooking?.internment ?? "")
 
   const isEditing = !!existingBooking
 
@@ -48,6 +50,8 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
           start_time: startTime,
           end_time: endTime,
           service_type: serviceType,
+          funeral_location: funeralLocation || null,
+          internment: internment || null,
           notes: notes || null
         })
       } else {
@@ -59,6 +63,8 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
           start_time: startTime,
           end_time: endTime,
           service_type: serviceType,
+          funeral_location: funeralLocation || null,
+          internment: internment || null,
           notes: notes || null
         })
       }
@@ -135,6 +141,26 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
             <option>Funeral</option>
           </select>
         </div>
+        
+        <div style={fieldStyle}>
+          <label style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Funeral location</label>
+          <input
+            value={funeralLocation}
+            onChange={e => setFuneralLocation(e.target.value)}
+            style={inputStyle}
+            placeholder="e.g. St. Joseph's Church, Graveside"
+            />
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Internment</label>
+            <input
+              value={internment}
+              onChange={e => setInternment(e.target.value)}
+              style={inputStyle}
+              placeholder="e.g. Calvary Cemetery, Neptune Crematory"
+            />
+          </div>
 
         <div style={fieldStyle}>
           <label>Notes</label>
