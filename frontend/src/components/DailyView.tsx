@@ -62,6 +62,7 @@ function DailyView({ chapels, onBookingChanged }: DailyViewProps) {
               chapelBookings.map(booking => (
                 <div
                   key={booking.booking_id}
+                  className="booking-card"
                   style={bookingCardStyle}
                   onClick={() => setSelectedBooking({ booking, chapel })}
                 >

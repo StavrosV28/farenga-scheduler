@@ -53,7 +53,7 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
   }
 
   return (
-    <div style={overlayStyle}>
+    <div className="animate-fade-in-scale" style={overlayStyle}>
       <div style={modalStyle}>
         <h2 style={{ marginTop: 0, color: "var(--text-primary)", fontWeight: "500" }}>{booking.family_name} Family</h2>
 

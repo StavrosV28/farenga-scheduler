@@ -82,7 +82,7 @@ function App() {
   if (!session) return <Login onLogin={() => {}} />
 
   return (
-  <div style={{ 
+  <div className="animate-fade-in" style={{ 
     padding: "20px", 
     fontFamily: "inherit",
     maxWidth: "1000px", 
@@ -142,16 +142,20 @@ function App() {
       </button>
     </div>
 
-    {view === 'daily' ? (
+    {view === "daily" ? (
+      <div key="daily" className="tab-content">
       <DailyView
         chapels={chapels}
         onBookingChanged={refreshBookings}
       />
+      </div>
     ) : (
       <>
-        <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-          <button onClick={goToPreviousWeek} style={navButtonStyle}>← Previous</button>
-          <button onClick={goToNextWeek} style={navButtonStyle}>Next →</button>
+        <div key="weekly" className="tab-content">
+          <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+            <button onClick={goToPreviousWeek} style={navButtonStyle}>← Previous</button>
+            <button onClick={goToNextWeek} style={navButtonStyle}>Next →</button>
+          </div>
         </div>
         {loading ? (
           <p style={{ color: "var(--text-secondary)" }}>Loading...</p>

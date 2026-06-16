@@ -77,7 +77,7 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
   }
 
   return (
-    <div style={overlayStyle}>
+    <div className="animate-fade-in-scale" style={overlayStyle}>
       <div style={modalStyle}>
         <h2 style={{ marginTop: 0, marginBottom: "8px", color: "var(--text-primary)", fontWeight: "500" }}>{isEditing ? "Edit Booking" : "New Booking"}</h2>
         <p style={{ color: "var(--text-secondary)", margin: "0 0 24px", fontSize: "14px" }}>

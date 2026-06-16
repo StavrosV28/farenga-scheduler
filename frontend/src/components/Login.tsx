@@ -31,13 +31,13 @@ function Login ({ onLogin }: LoginProps) {
         onLogin()
     }
     return (
-      <div style={{ 
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "var(--bg-primary)"
+      <div className="animate-fade-in" style={{ 
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "var(--bg-primary)"
       }}>
       <img
         src="/ffh_logo_header.png" 
@@ -45,7 +45,7 @@ function Login ({ onLogin }: LoginProps) {
         style={{ height: "80px", width: "auto", marginBottom: "24px", mixBlendMode: "lighten" }} 
       />
 
-      <div style={{ 
+      <div className="animate-fade-in-scale" style={{ 
         background: "var(--bg-secondary)",
         borderRadius: "16px",
         padding: "32px",

@@ -57,3 +57,68 @@ input:focus, select:focus, textarea:focus {
 select option {
   background: var(--bg-secondary);
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.animate-fade-in-scale {
+    animation: fadeInScale 0.25s ease forwards;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+button {
+    transition: opacity 0.15s ease, transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.booking-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.booking-card:hover {
+    transform: translateY(-2px);
+    border-color: #60a5fa;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15);
+}
+
+.tab-content {
+    animation: fadeInUp 0.2s ease forwards;
+}

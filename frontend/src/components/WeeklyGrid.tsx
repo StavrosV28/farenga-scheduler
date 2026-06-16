@@ -55,7 +55,7 @@ function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
 }
 
   return (
-    <div
+    <div className="booking-card"
       ref={setNodeRef}
       style={style}
       {...listeners}
