@@ -51,6 +51,15 @@ class BookingDelete(BaseModel):
     end_time: str
     service_type: str
     notes: str | None = None
+    
+class ContactCreate(BaseModel):
+    name: str
+    role: str | None = None
+    phone: str | None = None
+    email: str | None = None
+    company: str | None = None
+    notes: str | None = None
+    created_by: str
 
 @app.get("/")
 def root():
@@ -185,6 +194,54 @@ def get_bookings_for_day(date: date):
         .execute()
     
     return response.data
+
+@app.get("/contacts")
+def get_contacts():
+    response = supabase.table("contacts") \
+        .select("*") \
+        .order("name") \
+        .execute()
+    
+    return response.data
+
+@app.post("/contacts")
+def create_contact(contact: ContactCreate):
+    response = supabase.table("contacts").insert({
+        "name": contact.name,
+        "role": contact.role,
+        "phone": contact.phone,
+        "email": contact.email,
+        "company": contact.company,
+        "notes": contact.notes,
+        "created_by": contact.created_by
+    }).execute()
+    
+    return response.data[0]
+
+@app.put("/contacts/{contact_id}")
+def update_contact(contact_id: str, contact: ContactCreate):
+    response = supabase.table("contacts") \
+        .update({
+              "name": contact.name,
+            "role": contact.role,
+            "phone": contact.phone,
+            "email": contact.email,
+            "company": contact.company,
+            "notes": contact.notes
+        }) \
+        .eq("contact_id", contact_id) \
+        .execute()
+        
+    return response.data[0]
+        
+@app.delete("/contacts/{contact_id}")
+def delete_contact(contact_id: str):
+    supabase.table("contacts") \
+        .delete() \
+        .eq("contact_id", contact_id) \
+        .execute()
+        
+    return {"message": "Contact deleted successfully"}
 
 @app.get("/bookings/week")
 def get_bookings_for_week(reference_date: date):
