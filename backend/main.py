@@ -209,7 +209,7 @@ def get_chapels():
 @app.get("/bookings/day")
 def get_bookings_for_day(date: date):
     response = supabase.table("bookings") \
-        .select("*") \
+        .select("*, chapels(chapel_name)") \
         .eq("date", str(date)) \
         .order("start_time") \
         .execute()
@@ -298,7 +298,7 @@ def update_briefing(briefing_date: date, briefing: BriefingCreate):
 @app.get("/bookings/funerals")
 def get_funeral_follows(funeral_date: date):
     response = supabase.table("bookings") \
-        .select("*") \
+        .select("*, chapels(chapel_name)") \
         .eq("funeral_date", str(funeral_date)) \
         .execute()
     return response.data
