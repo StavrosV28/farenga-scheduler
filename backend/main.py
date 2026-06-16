@@ -295,6 +295,14 @@ def update_briefing(briefing_date: date, briefing: BriefingCreate):
         .execute()
     return response.data[0]
 
+@app.get("/bookings/funerals")
+def get_funeral_follows(funeral_date: date):
+    response = supabase.table("bookings") \
+        .select("*") \
+        .eq("funeral_date", str(funeral_date)) \
+        .execute()
+    return response.data
+
 @app.get("/bookings/week")
 def get_bookings_for_week(reference_date: date):
     start_of_week = reference_date - timedelta(days=(reference_date.weekday() + 1) % 7)
