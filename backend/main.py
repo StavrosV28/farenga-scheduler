@@ -60,6 +60,11 @@ class ContactCreate(BaseModel):
     company: str | None = None
     notes: str | None = None
     created_by: str
+    
+class BriefingCreate(BaseModel):
+    briefing_date: str
+    briefing_text: str
+    created_by: str
 
 @app.get("/")
 def root():
@@ -242,6 +247,37 @@ def delete_contact(contact_id: str):
         .execute()
         
     return {"message": "Contact deleted successfully"}
+
+@app.get("/briefings/{briefing_date}")
+def get_briefing(briefing_date: date):
+    response = supabase.table("daily_briefings") \
+        .select("*") \
+        .eq("briefing_date", str(briefing_date)) \
+        .execute()
+        
+    if not response.data:
+            return None
+        
+    return response.data[0]
+
+@app.post("/briefings")
+def create_briefing(briefing:BriefingCreate):
+    response = supabase.table("daily_briefings").insert({
+        "briefing_date": str(briefing.briefing_date),
+        "briefing_text": briefing.briefing_text,
+        "created_by": briefing.created_by
+    }).execute()
+    return response.data[0]
+
+@app.put("/briefings/{briefing_date}")
+def update_briefing(briefing_date: date, briefing: BriefingCreate):
+    response = supabase.table("daily_briefings") \
+        .update({
+            "briefing_text": briefing.briefing_text
+        }) \
+        .eq("briefing_date", str(briefing_date)) \
+        .execute()
+    return response.data[0]
 
 @app.get("/bookings/week")
 def get_bookings_for_week(reference_date: date):

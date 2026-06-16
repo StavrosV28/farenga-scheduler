@@ -31,3 +31,11 @@ export interface Contact {
     created_by: string
     created_at: string
 }
+
+export interface DailyBriefing {
+    briefing_id: string
+    briefing_date: string
+    briefing_text: string
+    created_by: string
+    created_at: string
+}
