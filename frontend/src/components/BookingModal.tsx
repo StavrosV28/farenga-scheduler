@@ -77,8 +77,8 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
   }
 
   return (
-    <div className="animate-fade-in-scale" style={overlayStyle}>
-      <div style={modalStyle}>
+    <div style={overlayStyle} onClick={onClose}>
+      <div className="animate-fade-in-scale" style={modalStyle} onClick={e => e.stopPropagation()}>
         <h2 style={{ marginTop: 0, marginBottom: "8px", color: "var(--text-primary)", fontWeight: "500" }}>{isEditing ? "Edit Booking" : "New Booking"}</h2>
         <p style={{ color: "var(--text-secondary)", margin: "0 0 24px", fontSize: "14px" }}>
           {chapel.chapel_name} — {new Date(date + "T00:00:00").toLocaleDateString("en-US", {
@@ -166,7 +166,7 @@ function BookingModal({ chapel, date, onClose, onBookingCreated, existingBooking
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   top: 0, left: 0, right: 0, bottom: 0,
-  background: "rgba(0,0,0,0.7)",
+  background: "rgba(0,0,0,0.3)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",

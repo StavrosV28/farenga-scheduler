@@ -53,8 +53,8 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
   }
 
   return (
-    <div className="animate-fade-in-scale" style={overlayStyle}>
-      <div style={modalStyle}>
+    <div style={overlayStyle} onClick={onClose}>
+      <div className="animate-fade-in-scale" style={modalStyle} onClick={e => e.stopPropagation()}>
         <h2 style={{ marginTop: 0, color: "var(--text-primary)", fontWeight: "500" }}>{booking.family_name} Family</h2>
 
         <div style={detailRowStyle}>
@@ -129,7 +129,7 @@ function BookingDetail({ booking, chapel, onClose, onBookingChanged }: BookingDe
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   top: 0, left: 0, right: 0, bottom: 0,
-  background: "rgba(0,0,0,0.7)",
+  background: "rgba(0,0,0,0.3)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",

@@ -168,8 +168,8 @@ function ContactDetail({ contact, onClose, onEdit, onDeleted }: ContactDetailPro
   }
 
   return (
-    <div style={overlayStyle}>
-      <div className="animate-fade-in-scale" style={modalStyle}>
+    <div style={overlayStyle} onClick={onClose}>
+      <div className="animate-fade-in-scale" style={modalStyle} onClick={e => e.stopPropagation()}>
         <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
           <div style={{
             width: "48px",
