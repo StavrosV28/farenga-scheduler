@@ -43,7 +43,7 @@ function DailyBriefingTab() {
             if (b.internment) line += ` | Internment: ${b.internment}`
             return line
             }
-        
+
             const formatFuneralFollow = (b: any, index: number) => {
             let line = `${index + 1} - ${b.family_name}`
             if (b.funeral_time) line += ` ${formatTime(b.funeral_time)}`
@@ -121,75 +121,56 @@ function DailyBriefingTab() {
     }
   }
 
-  function handlePrint() {
+    function handlePrint() {
     const printDate = new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
-      weekday: "long", month: "long", day: "numeric", year: "numeric"
+        weekday: "long", month: "long", day: "numeric", year: "numeric"
     })
+
+    const rawText = briefing?.briefing_text ?? text
+
+    const formattedText = rawText
+        .split("\n")
+        .map(line => {
+        const headers = ["Funerals:", "Arrangements:", "Visitations:", "Bodies out:"]
+        if (headers.some(h => line.trim().startsWith(h))) {
+            return `<p class="section-header">${line}</p>`
+        }
+        return `<p class="entry">${line}</p>`
+        })
+        .join("")
 
     const printWindow = window.open("", "_blank")
     if (!printWindow) return
 
     printWindow.document.write(`
         <!DOCTYPE html>
-            <html>
-                <head>
-                    <title>Daily Briefing — ${printDate}</title>
-                    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-                    <style>
-                        @page {
-                            margin: 1in;
-                            size: letter;
-                        }
-                        * {
-                            box-sizing: border-box;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        body {
-                            font-family: 'Lato', Arial, sans-serif;
-                            color: #1a1a1a;
-                            font-size: 15px;
-                            line-height: 2;
-                        }
-                        .date {
-                            font-family: 'Playfair Display', serif;
-                            font-size: 28px;
-                            font-weight: 700;
-                            color: #1a1a1a;
-                            margin-bottom: 4px;
-                        }
-                        .subtitle {
-                            font-size: 13px;
-                            color: #555;
-                            letter-spacing: 0.08em;
-                            text-transform: uppercase;
-                            margin-bottom: 24px;
-                        }
-                        .divider {
-                            border: none;
-                            border-top: 1.5px solid #1a1a1a;
-                            margin-bottom: 28px;
-                        }
-                        pre {
-                            white-space: pre-wrap;
-                            font-family: 'Lato', Arial, sans-serif;
-                            font-size: 15px;
-                            line-height: 2.2;
-                            color: #1a1a1a;
-                        }
-                    </style>
-                </head>
-    <body>
-      <div class="date">${printDate}</div>
-      <div class="subtitle">Farenga Funeral Home — Daily Briefing</div>
-      <hr class="divider" />
-      <pre>${briefing?.briefing_text ?? text}</pre>
-    </body>
-    </html>
+        <html>
+        <head>
+            <title>Daily Briefing — ${printDate}</title>
+            <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+            <style>
+            @page { margin: 1in; size: letter; }
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            body { font-family: 'Lato', Arial, sans-serif; color: #1a1a1a; font-size: 15px; line-height: 2; }
+            .date { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+            .subtitle { font-size: 13px; color: #555; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 24px; }
+            .divider { border: none; border-top: 1.5px solid #1a1a1a; margin-bottom: 28px; }
+            .section-header { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-top: 24px; margin-bottom: 6px; color: #1a1a1a; }
+            .entry { font-size: 14px; margin: 0; padding: 2px 0; line-height: 1.8; }
+            .content { margin-top: 8px; }
+            </style>
+        </head>
+        <body>
+            <div class="date">${printDate}</div>
+            <div class="subtitle">Farenga Funeral Home — Daily Briefing</div>
+            <hr class="divider" />
+            <div class="content">${formattedText}</div>
+        </body>
+        </html>
     `)
     printWindow.document.close()
     printWindow.print()
-  }
+    }
 
   const displayDate = new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
     weekday: "long", month: "long", day: "numeric", year: "numeric"
