@@ -7,6 +7,7 @@ import api from "./api"
 import { supabase } from "./supabase"
 import DailyView from "./components/DailyView"
 import ContactsDirectory from "./components/ContactsDirectory"
+import DailyBriefingTab from "./components/DailyBriefing"
 
 function getWeekDates(referenceDate: Date): string[] {
   const day = referenceDate.getDay()
@@ -26,7 +27,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [session, setSession] = useState<any>(null)
   const [checkingSession, setCheckingSession] = useState(true)
-  const [view, setView] = useState<'daily' | 'weekly' | 'contacts'>('daily')
+  const [view, setView] = useState<'daily' | 'weekly' | 'contacts' | 'briefing'>('daily')
 
   const weekDates = getWeekDates(currentDate)
 
@@ -83,13 +84,13 @@ function App() {
   if (!session) return <Login onLogin={() => {}} />
 
   return (
-  <div className="animate-fade-in" style={{ 
-    padding: "20px", 
-    fontFamily: "inherit",
-    maxWidth: "1000px", 
-    margin: "0 auto",
-    minHeight: "100vh"
-  }}>
+    <div className="animate-fade-in" style={{ 
+      padding: "20px", 
+      fontFamily: "inherit",
+      maxWidth: "1000px", 
+      margin: "0 auto",
+      minHeight: "100vh"
+    }}>
     <div style={{ 
       display: "flex", 
       justifyContent: "space-between", 
@@ -128,7 +129,7 @@ function App() {
       </button>
     </div>
 
-    <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+    <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
       <button
         onClick={() => setView('daily')}
         style={tabStyle(view === 'daily')}
@@ -141,13 +142,18 @@ function App() {
       >
         Weekly
       </button>
-      <div>
+
       <button
         onClick={() => setView('contacts')}
         style={tabStyle(view === 'contacts')}>
           Contacts
         </button>
-    </div>
+      <button 
+        onClick={() => setView('briefing')} 
+        style={tabStyle(view === 'briefing')}>
+        Briefing
+      </button>
+
     </div>
 
 
@@ -184,13 +190,18 @@ function App() {
         <ContactsDirectory />
       </div>
     )}
+    {view === 'briefing' && (
+      <div key="briefing" className="tab-content">
+        <DailyBriefingTab />
+      </div>
+    )}
   </div>
   )
 }
 
 function tabStyle(active: boolean): React.CSSProperties {
   return {
-    padding: "8px 20px",
+    padding: "8px 24px",
     borderRadius: "99px",
     border: active ? "none" : "0.5px solid var(--border)",
     cursor: "pointer",
