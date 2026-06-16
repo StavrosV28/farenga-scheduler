@@ -3,6 +3,14 @@ import type { DailyBriefing } from "../types"
 import api from "../api"
 import { supabase } from "../supabase"
 
+function formatTime(time: string): string {
+  const [hours, minutes] = time.split(":")
+  const h = parseInt(hours)
+  const ampm = h >= 12 ? "PM" : "AM"
+  const hour = h % 12 || 12
+  return `${hour}:${minutes} ${ampm}`
+}
+
 function DailyBriefingTab() {
   const [briefing, setBriefing] = useState<DailyBriefing | null>(null)
   const [loading, setLoading] = useState(true)
@@ -14,6 +22,43 @@ function DailyBriefingTab() {
     tomorrow.setDate(tomorrow.getDate() + 1)
     return tomorrow.toISOString().split("T")[0]
   })
+
+  async function generatePrefill() {
+  try {
+    const response = await api.get(`/bookings/day?date=${selectedDate}`)
+    const bookings = response.data
+
+    const funerals = bookings.filter((b: any) => b.service_type === "Funeral")
+    const viewings = bookings.filter((b: any) => b.service_type === "Viewing")
+    const memorials = bookings.filter((b: any) => b.service_type === "Memorial")
+
+    const formatEntry = (b: any, index: number) => {
+      let line = `${index + 1} - ${b.family_name} ${formatTime(b.start_time)}`
+      if (b.funeral_location) line += ` - ${b.funeral_location}`
+      if (b.internment) line += ` | Internment: ${b.internment}`
+      return line
+    }
+
+    const funeralsSection = funerals.length > 0
+      ? funerals.map((b: any, i: number) => formatEntry(b, i)).join("\n")
+      : "1 - "
+
+    const arrangementsSection = memorials.length > 0
+      ? memorials.map((b: any, i: number) => formatEntry(b, i)).join("\n")
+      : "1 - "
+
+    const visitationsSection = viewings.length > 0
+      ? viewings.map((b: any, i: number) => formatEntry(b, i)).join("\n")
+      : "1 - "
+
+    const generated = `Funerals:\n${funeralsSection}\n\nArrangements:\n${arrangementsSection}\n\nVisitations:\n${visitationsSection}\n\nBodies out:\n1 - `
+
+    setText(generated)
+    setEditing(true)
+  } catch {
+    alert("Something went wrong generating the briefing")
+  }
+}
 
   function fetchBriefing(date: string) {
     setLoading(true)
@@ -162,6 +207,11 @@ function DailyBriefingTab() {
               Print
             </button>
           )}
+            {!editing && (
+                <button onClick={generatePrefill} style={secondaryBtnStyle}>
+                    Pre-fill from schedule
+                </button>
+            )}
           {!editing ? (
             <button onClick={() => setEditing(true)} style={primaryBtnStyle}>
               {briefing ? "Edit" : "Write briefing"}
@@ -226,6 +276,11 @@ function DailyBriefingTab() {
           <button onClick={() => setEditing(true)} style={primaryBtnStyle}>
             Write briefing
           </button>
+          {!editing && (
+            <button onClick={generatePrefill} style={secondaryBtnStyle}>
+                Pre-fill from schedule
+            </button>
+            )}
         </div>
       )}
     </div>
