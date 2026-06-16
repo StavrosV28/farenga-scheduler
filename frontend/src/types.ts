@@ -19,3 +19,15 @@ export interface Booking {
     notes: string | null
     created_at: string
 }
+
+export interface Contact {
+    contact_id: string
+    name: string
+    role: string | null
+    phone: string | null
+    email: string | null
+    company: string | null
+    notes: string | null
+    created_by: string
+    created_at: string
+}

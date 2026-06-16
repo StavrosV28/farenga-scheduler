@@ -6,6 +6,7 @@ import Login from "./components/Login"
 import api from "./api"
 import { supabase } from "./supabase"
 import DailyView from "./components/DailyView"
+import ContactsDirectory from "./components/ContactsDirectory"
 
 function getWeekDates(referenceDate: Date): string[] {
   const day = referenceDate.getDay()
@@ -25,7 +26,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [session, setSession] = useState<any>(null)
   const [checkingSession, setCheckingSession] = useState(true)
-  const [view, setView] = useState<'daily' | 'weekly'>('daily')
+  const [view, setView] = useState<'daily' | 'weekly' | 'contacts'>('daily')
 
   const weekDates = getWeekDates(currentDate)
 
@@ -140,34 +141,48 @@ function App() {
       >
         Weekly
       </button>
+      <div>
+      <button
+        onClick={() => setView('contacts')}
+        style={tabStyle(view === 'contacts')}>
+          Contacts
+        </button>
+    </div>
     </div>
 
-    {view === "daily" ? (
+
+    {view === 'daily' && (
       <div key="daily" className="tab-content">
-      <DailyView
+        <DailyView
         chapels={chapels}
         onBookingChanged={refreshBookings}
       />
       </div>
+    )}
+
+    {view === 'weekly' && (
+      <div key="weekly" className="tab-content">
+      <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+      <button onClick={goToPreviousWeek} style={navButtonStyle}>← Previous</button>
+      <button onClick={goToNextWeek} style={navButtonStyle}>Next →</button>
+      </div>
+    {loading ? (
+      <p style={{ color: "var(--text-secondary)" }}>Loading...</p>
     ) : (
-      <>
-        <div key="weekly" className="tab-content">
-          <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-            <button onClick={goToPreviousWeek} style={navButtonStyle}>← Previous</button>
-            <button onClick={goToNextWeek} style={navButtonStyle}>Next →</button>
-          </div>
-        </div>
-        {loading ? (
-          <p style={{ color: "var(--text-secondary)" }}>Loading...</p>
-        ) : (
-          <WeeklyGrid
-            chapels={chapels}
-            bookings={bookings}
-            weekDates={weekDates}
-            onBookingCreated={refreshBookings}
-          />
-        )}
-      </>
+      <WeeklyGrid
+        chapels={chapels}
+        bookings={bookings}
+        weekDates={weekDates}
+        onBookingCreated={refreshBookings}
+      />
+    )}
+  </div>
+    )}
+
+    {view === 'contacts' && (
+      <div key="contacts" className="tab-content">
+        <ContactsDirectory />
+      </div>
     )}
   </div>
   )
