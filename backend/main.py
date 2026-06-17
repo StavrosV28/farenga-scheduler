@@ -303,6 +303,19 @@ def get_funeral_follows(funeral_date: date):
         .execute()
     return response.data
 
+@app.get("/audit")
+def get_audit_log():
+    from datetime import datetime, timedelta
+    seven_days_ago = (datetime.now() - timedelta(days=7)).isoformat()
+    
+    response = supabase.table("audit_log") \
+        .select("*, users(name), bookings(family_name, date, chapels(chapel_name))") \
+        .gte("changed_at", seven_days_ago) \
+        .order("changed_at", desc=True) \
+        .execute()
+    
+    return response.data
+
 @app.get("/bookings/week")
 def get_bookings_for_week(reference_date: date):
     start_of_week = reference_date - timedelta(days=(reference_date.weekday() + 1) % 7)
