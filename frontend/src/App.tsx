@@ -8,6 +8,7 @@ import { supabase } from "./supabase"
 import DailyView from "./components/DailyView"
 import ContactsDirectory from "./components/ContactsDirectory"
 import DailyBriefingTab from "./components/DailyBriefing"
+import ActivityLog from "./components/ActivityLog"
 
 function getWeekDates(referenceDate: Date): string[] {
   const day = referenceDate.getDay()
@@ -27,7 +28,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [session, setSession] = useState<any>(null)
   const [checkingSession, setCheckingSession] = useState(true)
-  const [view, setView] = useState<'daily' | 'weekly' | 'contacts' | 'briefing'>('daily')
+  const [view, setView] = useState<'daily' | 'weekly' | 'contacts' | 'briefing' | 'activity'>('daily')
 
   const weekDates = getWeekDates(currentDate)
 
@@ -153,7 +154,9 @@ function App() {
         style={tabStyle(view === 'briefing')}>
         Briefing
       </button>
-
+      <button onClick={() => setView('activity')} style={tabStyle(view === 'activity')}>
+        Activity
+      </button>
     </div>
 
 
@@ -193,6 +196,11 @@ function App() {
     {view === 'briefing' && (
       <div key="briefing" className="tab-content">
         <DailyBriefingTab />
+      </div>
+    )}
+    {view === 'activity' && (
+      <div key="activity" className="tab-content">
+        <ActivityLog />
       </div>
     )}
   </div>
