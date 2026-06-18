@@ -309,7 +309,7 @@ def get_audit_log():
     seven_days_ago = (datetime.now() - timedelta(days=7)).isoformat()
     
     response = supabase.table("audit_log") \
-        .select("*, users(name), bookings(family_name, date, chapels(chapel_name))") \
+        .select("*, users(name), bookings(*, chapels(chapel_name))") \
         .gte("changed_at", seven_days_ago) \
         .order("changed_at", desc=True) \
         .execute()
