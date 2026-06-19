@@ -6,13 +6,14 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
-  TouchSensor,
+  pointerWithin,
   useSensor,
   useSensors
 } from "@dnd-kit/core"
 import type { DragEndEvent } from "@dnd-kit/core"
 import { useDraggable, useDroppable } from "@dnd-kit/core"
 import api from "../api"
+import { snapCenterToCursor } from "@dnd-kit/modifiers"
 
 function formatTime(time: string): string {
   const [hours, minutes] = time.split(":")
@@ -33,26 +34,30 @@ interface DraggableBookingProps {
   booking: Booking
   onClick: (e: React.MouseEvent) => void
 }
+const serviceColors: Record<string, { bg: string; border: string; text: string; timeColor: string; typeColor: string }> = {
+    Viewing: { bg: "#1e3a5f", border: "#2d5a9e", text: "#e0f0ff", timeColor: "#93c5fd", typeColor: "#60a5fa" },
+    Funeral: { bg: "#3b1f2b", border: "#7f1d1d", text: "#ffe0e0", timeColor: "#fca5a5", typeColor: "#f87171" },
+    Memorial: { bg: "#1a3a2a", border: "#166534", text: "#e0ffe8", timeColor: "#86efac", typeColor: "#4ade80" }
+  }
 
 function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: booking.booking_id,
     data: { booking }
   })
 
+  const colors = serviceColors[booking.service_type] ?? serviceColors["Viewing"]
+
   const style: React.CSSProperties = {
-  background: "#1e3f6e",
-  borderRadius: "8px",
-  padding: "8px 10px",
-  marginBottom: "6px",
-  cursor: "grab",
-  opacity: isDragging ? 0.4 : 1,
-  transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
-  userSelect: "none",
-  border: "0.5px solid #2d5a9e",
-  borderLeftWidth: "3px",
-  borderLeftColor: "#60a5fa"
-}
+    background: colors.bg,
+    borderRadius: "8px",
+    padding: "10px 12px",
+    marginBottom: "6px",
+    cursor: "grab",
+    opacity: isDragging ? 0.3 : 1,
+    userSelect: "none",
+    border: `0.5px solid ${colors.border}`
+  }
 
   return (
     <div className="booking-card"
@@ -62,11 +67,11 @@ function DraggableBooking({ booking, onClick }: DraggableBookingProps) {
       {...attributes}
       onClick={onClick}
     >
-      <div style={{ fontWeight: "500", fontSize: "13px", color: "#ffffff" }}>{booking.family_name}</div>
-      <div style={{ fontSize: "11px", color: "#93c5fd", marginTop: "2px" }}>
+      <div style={{ fontWeight: "500", fontSize: "14px", color: colors.text, marginBottom: "4px" }}>{booking.family_name}</div>
+      <div style={{ fontSize: "11px", color: colors.timeColor, marginTop: "2px" }}>
         {formatTime(booking.start_time)} - {formatTime(booking.end_time)}
       </div>
-      <div style={{ fontSize: "11px", color: "#60a5fa", marginTop: "1px" }}>{booking.service_type}</div>
+      <div style={{ fontSize: "10px", color: colors.typeColor, marginTop: "4px", textTransform: "uppercase", letterSpacing:"0.06em" }}>{booking.service_type}</div>
     </div>
   )
 }
@@ -104,16 +109,10 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
   const [selectedBooking, setSelectedBooking] = useState<{ booking: Booking; chapel: Chapel } | null>(null)
   const [dragError, setDragError] = useState("")
   const [activeBooking, setActiveBooking] = useState<Booking | null>(null)
-
+  
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 }
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 300,
-        tolerance: 8
-      }
+      activationConstraint: { distance: 0 }
     })
   )
 
@@ -151,13 +150,13 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
   }
 
   return (
-    <DndContext
+    <DndContext collisionDetection={pointerWithin} modifiers={[snapCenterToCursor]}
       sensors={sensors}
       onDragStart={event => {
         setActiveBooking(event.active.data.current?.booking)
         document.body.style.overflow = "hidden"
       }}
-      onDragEnd={event =>  {
+      onDragEnd={event => {
         document.body.style.overflow = ""
         handleDragEnd(event)
       }}
@@ -258,23 +257,26 @@ function WeeklyGrid({ chapels, bookings, weekDates, onBookingCreated }: WeeklyGr
       </div>
 
       <DragOverlay>
-        {activeBooking && (
-          <div style={{
-            background: "var(--accent-blue-dim)",
-            borderRadius: "8px",
-            padding: "8px 10px",
-            borderLeft: "3px solid var(--accent-blue)",
-            minWidth: "120px"
-          }}>
-          <div style={{ fontWeight: "500", fontSize: "13px", color: "var(--text-primary)" }}>
-            {activeBooking.family_name}
-          </div>
-          <div style={{ fontSize: "11px", color: "var(--accent-blue)", marginTop: "2px" }}>
-            {formatTime(activeBooking.start_time)} - {formatTime(activeBooking.end_time)}
-          </div>
+        {activeBooking && (() => {
+          const colors = serviceColors[activeBooking.service_type] ?? serviceColors["Viewing"]
+          return (
+            <div style={{
+              background: colors.bg,
+              borderRadius: "8px",
+              padding: "10px 12px",
+              border: `0.5px solid ${colors.border}`,
+              minWidth: "120px"
+            }}>
+            <div style={{ fontSize: "14px", fontWeight: "500", color: colors.text, marginBottom: "4px" }}>
+              {activeBooking.family_name}
             </div>
-        )}
-        </DragOverlay>
+            <div style={{ fontSize: "11px", color: colors.timeColor }}>
+              {formatTime(activeBooking.start_time)} — {formatTime(activeBooking.end_time)}
+            </div>
+            </div>
+          )
+        })()}
+      </DragOverlay>
 
       {selectedCell && (
         <BookingModal
