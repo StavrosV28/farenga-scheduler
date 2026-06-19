@@ -96,15 +96,15 @@ function formatDay(dateStr: string): string {
 }
 
 function actionColor(action: string): string {
-  if (action === "Created") return "var(--accent-green)"
-  if (action === "Deleted") return "var(--accent-red)"
-  return "var(--accent-blue)"
+  if (action === "Created") return "#4ade80"
+  if (action === "Deleted") return "#f87171"
+  return "#93c5fd"
 }
 
 function actionBg(action: string): string {
-  if (action === "Created") return "var(--accent-green-dim)"
-  if (action === "Deleted") return "var(--accent-red-dim)"
-  return "var(--accent-blue-dim)"
+  if (action === "Created") return "#166534"
+  if (action === "Deleted") return "#7f1d1d"
+  return "#1e3a5f"
 }
 
 function ActivityLog() {
@@ -166,10 +166,10 @@ function ActivityLog() {
                 <div
                   key={entry.audit_id}
                   style={{
-                    background: "var(--bg-secondary)",
+                    background: entry.action === "Created" ? "#1a3a2a" : entry.action === "Deleted" ? "#3b1f2b" : "#1e2a45",
                     borderRadius: "10px",
                     padding: "14px 16px",
-                    border: "0.5px solid var(--border)",
+                    border: entry.action === "Created" ? "0.5px solid #166534" : entry.action === "Deleted" ? "0.5px solid  #7f1d1d" : "0.5px solid #2d5a9e",
                     borderLeft: `3px solid ${actionColor(entry.action)}`
                   }}
                 >
@@ -215,7 +215,7 @@ function ActivityLog() {
                       {changes.map((change, i) => (
                         <div key={i} style={{
                           fontSize: "12px",
-                          color: "var(--text-secondary)",
+                          color: entry.action === "Created" ? "#86efac" : entry.action === "Deleted" ? "#fca5a5" : "#93c5fd",
                           padding: "2px 0"
                         }}>
                           → {change}

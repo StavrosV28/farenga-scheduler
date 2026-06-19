@@ -130,31 +130,30 @@ function App() {
       </button>
     </div>
 
-    <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
-      <button
-        onClick={() => setView('daily')}
-        style={tabStyle(view === 'daily')}
-      >
+    <div style={{ 
+      display: "flex", 
+      gap: "0", 
+      marginBottom: "24px",
+      borderBottom: "1px solid var(--border)"
+    }}>
+      <button onClick={() => setView('daily')} style={tabStyle(view === 'daily')}>
+        <i className="ti ti-calendar" aria-hidden="true"></i>
         Today
       </button>
-      <button
-        onClick={() => setView('weekly')}
-        style={tabStyle(view === 'weekly')}
-      >
+      <button onClick={() => setView('weekly')} style={tabStyle(view === 'weekly')}>
+        <i className="ti ti-layout-grid" aria-hidden="true"></i>
         Weekly
       </button>
-
-      <button
-        onClick={() => setView('contacts')}
-        style={tabStyle(view === 'contacts')}>
-          Contacts
-        </button>
-      <button 
-        onClick={() => setView('briefing')} 
-        style={tabStyle(view === 'briefing')}>
+      <button onClick={() => setView('contacts')} style={tabStyle(view === 'contacts')}>
+        <i className="ti ti-address-book" aria-hidden="true"></i>
+        Contacts
+      </button>
+      <button onClick={() => setView('briefing')} style={tabStyle(view === 'briefing')}>
+        <i className="ti ti-file-text" aria-hidden="true"></i>
         Briefing
       </button>
       <button onClick={() => setView('activity')} style={tabStyle(view === 'activity')}>
+        <i className="ti ti-activity" aria-hidden="true"></i>
         Activity
       </button>
     </div>
@@ -209,14 +208,19 @@ function App() {
 
 function tabStyle(active: boolean): React.CSSProperties {
   return {
-    padding: "8px 24px",
-    borderRadius: "99px",
-    border: active ? "none" : "0.5px solid var(--border)",
+    padding: "10px 16px",
+    background: "transparent",
+    border: "none",
+    borderBottom: active ? "2px solid #60a5fa" : "2px solid transparent",
     cursor: "pointer",
-    fontWeight: "500",
-    fontSize: "14px",
-    background: active ? "var(--accent-blue)" : "transparent",
-    color: active ? "#fff" : "var(--text-secondary)"
+    fontSize: "13px",
+    fontWeight: active ? "500" : "400",
+    color: active ? "#60a5fa" : "#64748b",
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    borderRadius: "0",
+    transition: "color 0.15s ease, border-color 0.15s ease"
   }
 }
 
