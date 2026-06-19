@@ -168,33 +168,35 @@ def update_booking(booking_id: str, booking: BookingUpdate, updated_by: str):
     return response.data[0]
 
 @app.delete("/bookings/{booking_id}")
+@app.delete("/bookings/{booking_id}")
 def delete_booking(booking_id: str, deleted_by: str):
-    # read old booking
     old_booking = supabase.table("bookings") \
-        .select("*") \
+        .select("*, chapels(chapel_name)") \
         .eq("booking_id", booking_id) \
         .execute()
-        
+
     if not old_booking.data:
-        raise HTTPException(
-            status_code = 404,
-            detail="Booking does not exist"
-        )
+        raise HTTPException(status_code=404, detail="Booking does not exist")
+
+    booking_data = old_booking.data[0]
+    chapel_name = booking_data.get("chapels", {}).get("chapel_name", "Unknown")
     
-    # write to audit log
+    previous_values = {**booking_data, "chapel_name": chapel_name}
+    if "chapels" in previous_values:
+        del previous_values["chapels"]
+
     supabase.table("audit_log").insert({
         "booking_id": booking_id,
         "user_id": deleted_by,
         "action": "Deleted",
-        "previous_values": old_booking.data[0]
+        "previous_values": previous_values
     }).execute()
-    
-    # delete the booking
+
     supabase.table("bookings") \
         .delete() \
         .eq("booking_id", booking_id) \
         .execute()
-    
+
     return {"message": "Booking deleted successfully"}
 
 
