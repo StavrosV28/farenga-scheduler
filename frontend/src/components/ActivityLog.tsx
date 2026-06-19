@@ -15,14 +15,14 @@ interface AuditEntry {
 }
 
 function getChanges(action: string, prev: any, current: any): string[] {
-  if (action === "Created") return ["Booking created"]
-  if (action === "Deleted") return [
-    `${prev?.family_name} Family — ${prev?.service_type}`,
-    prev?.start_time ? `${formatTime(prev.start_time)} — ${formatTime(prev.end_time)}` : ""
-  ].filter(Boolean)
-  if (!prev || !current) return ["Details updated"]
+    if (action === "Created") return ["Booking created"]
+    if (action === "Deleted") return [
+        `${prev?.family_name} Family — ${prev?.service_type}`,
+        prev?.start_time ? `${formatTime(prev.start_time)} — ${formatTime(prev.end_time)}` : ""
+    ].filter(Boolean)
+    if (!prev || !current) return ["Details updated"]
 
-  const changes: string[] = []
+    const changes: string[] = []
 
   const fields: Record<string, string> = {
     start_time: "Start time",
@@ -84,6 +84,7 @@ function groupByDay(entries: AuditEntry[]): Record<string, AuditEntry[]> {
     return groups
   }, {} as Record<string, AuditEntry[]>)
 }
+
 
 function formatDay(dateStr: string): string {
   const today = new Date().toISOString().split("T")[0]
@@ -161,6 +162,9 @@ function ActivityLog() {
                 minute: "2-digit",
                 hour12: true
               })
+                const familyName = entry.bookings?.family_name ?? entry.previous_values?.family_name ?? "Unknown"
+                const chapelName = entry.bookings?.chapels?.chapel_name ?? entry.previous_values?.chapel_name ?? "Unknown chapel"
+                const bookingDate = entry.bookings?.date ?? entry.previous_values?.date ?? null
 
               return (
                 <div
@@ -186,16 +190,16 @@ function ActivityLog() {
                         {entry.action}
                       </span>
                       <span style={{ fontWeight: "500", fontSize: "14px", color: "var(--text-primary)" }}>
-                        {entry.bookings?.family_name ?? "Unknown"} Family
+                        {familyName} Family
                       </span>
                     </div>
                     <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{time}</span>
                   </div>
 
                   <div style={{ fontSize: "13px", color: "var(--text-secondary)", marginBottom: "6px" }}>
-                    {entry.bookings?.chapels?.chapel_name ?? "Unknown chapel"} —{" "}
-                    {entry.bookings?.date
-                      ? new Date(entry.bookings.date + "T00:00:00").toLocaleDateString("en-US", {
+                    {chapelName} —{" "}
+                    {bookingDate
+                      ? new Date(bookingDate + "T00:00:00").toLocaleDateString("en-US", {
                           month: "short", day: "numeric"
                         })
                       : ""}
