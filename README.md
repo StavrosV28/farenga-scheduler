@@ -22,6 +22,8 @@ A deployed internal tool that gives staff a real-time view of chapel availabilit
 ## Features
 
 - **Weekly grid** — chapel × day view with drag-and-drop rescheduling between chapels
+  <img width="1009" height="673" alt="image" src="https://github.com/user-attachments/assets/bb45e827-b525-4ec0-a118-defa1bde6be3" />
+
 - **Daily view** — default tab showing today's services grouped by chapel with color-coded service types
 - **Conflict detection** — backend rejects any booking that overlaps an existing one in the same chapel
 - **Booking management** — create, edit, and delete bookings with funeral location, internment, and follow-on funeral date tracking
