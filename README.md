@@ -22,12 +22,19 @@ A deployed internal tool that gives staff a real-time view of chapel availabilit
 ## Features
 
 - **Weekly grid** — chapel × day view with drag-and-drop rescheduling between chapels
+  
   <img width="1009" height="673" alt="image" src="https://github.com/user-attachments/assets/bb45e827-b525-4ec0-a118-defa1bde6be3" />
 
 - **Daily view** — default tab showing today's services grouped by chapel with color-coded service types
+
+  <img width="1120" height="838" alt="image" src="https://github.com/user-attachments/assets/07f85fda-856e-4a76-9129-45cf3df78129" />
+
 - **Conflict detection** — backend rejects any booking that overlaps an existing one in the same chapel
 - **Booking management** — create, edit, and delete bookings with funeral location, internment, and follow-on funeral date tracking
 - **Daily briefing** — directors write and save the next day's briefing in the app; pre-fill pulls tomorrow's bookings automatically; printable as a clean formatted document
+
+<img width="1051" height="607" alt="image" src="https://github.com/user-attachments/assets/a5560794-1cc2-4b62-b34b-71dabf9d384f" />
+
 - **Contacts directory** — searchable card grid of vendors, clergy, and other contacts
 - **Activity log** — last 7 days of changes with field-level diffs showing exactly what was updated and by whom
 - **Authentication** — Supabase Auth with session persistence; staff stay logged in across visits
