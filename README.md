@@ -1,6 +1,6 @@
 # Farenga Scheduler
 
-A full-stack Progressive Web App built to replace paper-based scheduling at Farenga Funeral Home in Astoria, NY. Used daily by funeral home staff to manage chapel bookings, daily briefings, and vendor contacts.
+A full-stack Progressive Web App built to replace paper-based scheduling at my current job at Farenga Funeral home. Used daily by funeral home staff to manage chapel bookings, daily briefings, and vendor contacts.
 
 ## Live Demo
 
@@ -15,7 +15,7 @@ The funeral home was managing chapel scheduling through paper sheets and disorga
 
 ## The Solution
 
-A deployed internal tool that gives staff a real-time view of chapel availability, prevents double bookings, tracks every change, and generates printable daily briefings — all accessible from their iPhones.
+A deployed internal tool that gives staff a real-time view of chapel availability, prevents double bookings, tracks every change, and generates printable daily briefings that is accessible from their phones.
 
 ---
 
@@ -137,7 +137,7 @@ npm run dev
 ## Architecture
 
 ```
-iPhone/Browser
+Phone/Browser
       ↓ HTTPS
 Vercel (React PWA)
       ↓ REST/JSON
