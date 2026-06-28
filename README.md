@@ -69,13 +69,13 @@ A deployed internal tool that gives staff a real-time view of chapel availabilit
 ## Data Model
 
 ```
-chapels        — chapel_id, chapel_name, capacity
-users          — user_id, name, email, password_hash, role
-bookings       — booking_id, chapel_id, created_by, family_name, date,
+chapels         — chapel_id, chapel_name, capacity
+users           — user_id, name, email, password_hash, role
+bookings        — booking_id, chapel_id, created_by, family_name, date,
                  start_time, end_time, service_type, funeral_location,
                  funeral_date, funeral_time, internment, notes
-audit_log      — audit_id, booking_id, user_id, action, previous_values, changed_at
-contacts       — contact_id, name, role, company, phone, email, notes
+audit_log       — audit_id, booking_id, user_id, action, previous_values, changed_at
+contacts        — contact_id, name, role, company, phone, email, notes
 daily_briefings — briefing_id, briefing_date, briefing_text, created_by
 ```
 
